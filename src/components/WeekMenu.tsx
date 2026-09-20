@@ -208,13 +208,13 @@ export default function WeekMenu({
         ? activeFilters.some(f => r.cuisine_tags?.map(t => t.toLowerCase()).includes(f))
         : true;
       return matchText && matchCuisine;
-    }).slice(0, 12);
+    }).slice(0, 30);
   }, [searchOpen, search, activeFilters, recipes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const daySearchResults = useMemo(() => {
     const q = daySearch.trim().toLowerCase();
-    if (!q) return recipes.slice(0, 12);
-    return recipes.filter(r => r.name.toLowerCase().includes(q)).slice(0, 12);
+    if (!q) return recipes.slice(0, 30);
+    return recipes.filter(r => r.name.toLowerCase().includes(q)).slice(0, 30);
   }, [daySearch, recipes]);
 
   function toggleFilter(tag: string) {
@@ -285,11 +285,21 @@ export default function WeekMenu({
                   Browse all · {recipes.length} recipes
                 </p>
               )}
-              {(search.trim() || activeFilters.length > 0) && (
-                <p className="px-3 pt-2 pb-1 text-[10px]" style={{ color: "#bbb" }}>
-                  {searchResults.length} of {recipes.length}{search.trim() ? ` matching "${search.trim()}"` : ""}
-                </p>
-              )}
+              {(search.trim() || activeFilters.length > 0) && (() => {
+                const totalMatches = recipes.filter(r => {
+                  const q = search.trim().toLowerCase();
+                  const matchText = q ? r.name.toLowerCase().includes(q) : true;
+                  const matchCuisine = activeFilters.length > 0
+                    ? activeFilters.some(f => r.cuisine_tags?.map(t => t.toLowerCase()).includes(f))
+                    : true;
+                  return matchText && matchCuisine;
+                }).length;
+                return (
+                  <p className="px-3 pt-2 pb-1 text-[10px]" style={{ color: "#bbb" }}>
+                    {searchResults.length} of {totalMatches}{search.trim() ? ` matching "${search.trim()}"` : ""}{totalMatches > searchResults.length ? " — type to narrow" : ""}
+                  </p>
+                );
+              })()}
               {searchResults.length > 0 ? (
                 <div className="max-h-64 overflow-y-auto">
                   {searchResults.map(r => (
