@@ -429,14 +429,14 @@ export default function WeekMenu({
           );
         })}
 
-        {/* ── Nestor: Give me some ideas! ── */}
+        {/* ── Recipe Genie: Give me some ideas! ── */}
         {!loading && (
           <div className="mt-1">
             <div className="bg-white rounded-xl border px-4 py-3 flex items-center justify-between"
               style={{ borderColor: "var(--mk-border)" }}>
               <div>
                 <p className="text-xs font-bold" style={{ color: "#3E7B5A" }}>✦ Give me some ideas!</p>
-                <p className="text-[10px] text-neutral-400">Nestor picks from your unplanned recipes</p>
+                <p className="text-[10px] text-neutral-400">Recipe Genie picks from your unplanned recipes</p>
               </div>
               <button
                 onClick={() => setNestorOpen(o => !o)}
