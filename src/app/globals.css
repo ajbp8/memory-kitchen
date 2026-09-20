@@ -1,13 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --mk-terracotta: #3E7B5A;
-  --mk-terracotta-light: #6AAF88;
-  --mk-cream: #F3F8F5;
-  --mk-border: #D4E8DC;
+  /* Masters-inspired palette */
+  --mk-green:           #1B5E2E;   /* Augusta deep green  */
+  --mk-green-mid:       #2E7A3E;   /* mid green for gradients */
+  --mk-gold:            #D4A017;   /* Masters gold — buttons, active states */
+  --mk-gold-light:      #F2C94C;   /* lighter gold for highlights */
+  --mk-cream:           #F8F6EE;   /* warm ivory background */
+  --mk-border:          #E0D8C8;   /* warm border */
+
+  /* Keep --mk-terracotta pointing to gold so existing components pick it up */
+  --mk-terracotta:      var(--mk-gold);
+  --mk-terracotta-light: var(--mk-gold-light);
 
   --background: var(--mk-cream);
-  --foreground: #1a2e22;
+  --foreground: #1a1a1a;
 }
 
 @theme inline {
