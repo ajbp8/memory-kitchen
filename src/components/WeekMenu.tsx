@@ -47,14 +47,11 @@ function formatDayFull(iso: string) {
   return `${names[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 
-function RingsLogo() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 22 22" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="3" stroke="white" strokeWidth="1.4" />
-      <circle cx="11" cy="11" r="6.5" stroke="white" strokeWidth="1.1" strokeDasharray="17 3.8" />
-      <circle cx="11" cy="11" r="10" stroke="white" strokeWidth="0.8" strokeDasharray="25 5.7" />
-    </svg>
-  );
+function AppLogo() {
+    return (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src="/icon-192.png" width="32" height="32" alt="" aria-hidden style={{ borderRadius: "7px" }} />
+        );
 }
 
 export default function WeekMenu({
@@ -239,7 +236,7 @@ export default function WeekMenu({
       {/* ── Banner ── */}
       <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }} className="px-5 pt-10 pb-4">
         <div className="flex items-center gap-2.5 mb-0.5">
-          <RingsLogo />
+                    <AppLogo />
           <span style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1 }}>
             <span style={{ color: "white" }}>Memory</span>
             <span style={{ color: "#FFE580" }}> Kitchen</span>
