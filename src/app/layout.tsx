@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description: "A mobile-first recipe sharing network for family and friends.",
   manifest: "/manifest.json",
   icons: {
+    icon: "/icons/icon-192.png",
     apple: "/apple-touch-icon.png",
   },
   appleWebApp: {
