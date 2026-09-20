@@ -461,57 +461,65 @@ export default function WeekMenu({
         {/* ── Recipe Genie ── */}
         {!loading && (
           <div className="mt-1">
-            <div className="bg-white rounded-xl border px-4 py-4" style={{ borderColor: "var(--mk-border)" }}>
-              <div className="flex items-center gap-2 mb-3">
-                <span style={{ fontSize: "18px", color: "#1B5E2E" }}>✦</span>
+            <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
+              {/* Header strip */}
+              <div className="px-4 py-3 flex items-center gap-2.5"
+                style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}>
+                <span style={{ fontSize: "22px", color: "#FFE580", lineHeight: 1 }}>✦</span>
                 <div>
-                  <p className="text-sm font-bold" style={{ color: "#1B5E2E" }}>Recipe Genie</p>
-                  <p className="text-[10px] text-neutral-400">e.g. &quot;sardines and pasta&quot; or &quot;quick chicken dinner&quot;</p>
+                  <p className="text-sm font-black tracking-tight" style={{ color: "white" }}>Recipe Genie</p>
+                  <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.6)" }}>
+                    e.g. &quot;sardines and pasta&quot; or &quot;quick chicken dinner&quot;
+                  </p>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={nestorPrompt}
-                  onChange={e => setNestorPrompt(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && askNestor()}
-                  placeholder="What's in your kitchen?"
-                  className="flex-1 rounded-xl px-3 py-2 text-sm border outline-none"
-                  style={{ borderColor: "var(--mk-border)" }}
-                />
-                <button
-                  onClick={askNestor}
-                  disabled={nestorLoading || !nestorPrompt.trim()}
-                  className="px-4 py-2 rounded-xl text-sm font-bold transition-opacity disabled:opacity-40 flex-shrink-0"
-                  style={{ background: "var(--mk-terracotta)", color: "white" }}
-                >
-                  {nestorLoading ? "…" : "GO →"}
-                </button>
-              </div>
-              {nestorLoading && (
-                <p className="text-xs text-neutral-400 mt-2 animate-pulse">Recipe Genie is thinking…</p>
-              )}
-              {nestorError && (
-                <p className="text-xs mt-2" style={{ color: "var(--mk-terracotta)" }}>{nestorError}</p>
-              )}
-              {nestorResults.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  {nestorResults.map((r, i) => (
-                    <div key={i} className="rounded-xl border px-3 py-3" style={{ borderColor: "var(--mk-border)", background: "var(--mk-cream)" }}>
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <p className="text-sm font-bold leading-snug" style={{ color: "#1a1a1a" }}>{r.name}</p>
-                        {r.cookTime && <span className="text-[10px] text-neutral-400 flex-shrink-0 mt-0.5">{r.cookTime}</span>}
+              {/* Input area */}
+              <div className="px-4 py-3" style={{ background: "#F0F7F2" }}>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={nestorPrompt}
+                    onChange={e => setNestorPrompt(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && askNestor()}
+                    placeholder="What's in your kitchen?"
+                    className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none"
+                    style={{ background: "white", border: "1px solid rgba(27,94,46,0.25)", color: "#1a1a1a" }}
+                  />
+                  <button
+                    onClick={askNestor}
+                    disabled={nestorLoading || !nestorPrompt.trim()}
+                    className="px-4 py-2.5 rounded-xl text-sm font-bold transition-opacity disabled:opacity-40 flex-shrink-0"
+                    style={{ background: "var(--mk-terracotta)", color: "white" }}
+                  >
+                    {nestorLoading ? "…" : "GO →"}
+                  </button>
+                </div>
+                {nestorLoading && (
+                  <p className="text-xs mt-2 animate-pulse" style={{ color: "#1B5E2E" }}>Recipe Genie is thinking…</p>
+                )}
+                {nestorError && (
+                  <p className="text-xs mt-2" style={{ color: "var(--mk-terracotta)" }}>{nestorError}</p>
+                )}
+                {nestorResults.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {nestorResults.map((r, i) => (
+                      <div key={i} className="rounded-xl px-3 py-3"
+                        style={{ background: "white", border: "1px solid rgba(27,94,46,0.18)" }}>
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <p className="text-sm font-bold leading-snug" style={{ color: "#1a1a1a" }}>{r.name}</p>
+                          {r.cookTime && <span className="text-[10px] text-neutral-400 flex-shrink-0 mt-0.5">{r.cookTime}</span>}
+                        </div>
+                        <p className="text-xs text-neutral-500 leading-relaxed mb-2.5">{r.description}</p>
+                        <button
+                          onClick={() => { setPendingFreeText(r.name); setPendingFreeTextMealType("dinner"); }}
+                          className="text-xs font-bold px-3 py-1.5 rounded-lg"
+                          style={{ background: "var(--mk-terracotta)", color: "white" }}
+                        >+ Plan it</button>
                       </div>
-                      <p className="text-xs text-neutral-500 leading-relaxed mb-2.5">{r.description}</p>
-                      <button
-                        onClick={() => { setPendingFreeText(r.name); setPendingFreeTextMealType("dinner"); }}
-                        className="text-xs font-bold px-3 py-1.5 rounded-lg"
-                        style={{ background: "var(--mk-terracotta)", color: "white" }}
-                      >+ Plan it</button>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
