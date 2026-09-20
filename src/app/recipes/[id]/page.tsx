@@ -66,7 +66,23 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
               </p>
             )}
           </div>
-          <SaveButton recipeId={recipe.id} initiallySaved={isSaved} />
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {recipe.owner_id === user.id && (
+              <Link
+                href={`/recipes/${recipe.id}/edit`}
+                aria-label="Edit recipe"
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(255,255,255,0.15)", border: "1.5px solid rgba(255,255,255,0.4)" }}
+              >
+                {/* Pencil icon */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </Link>
+            )}
+            <SaveButton recipeId={recipe.id} initiallySaved={isSaved} />
+          </div>
         </div>
         {recipe.save_count != null && recipe.save_count > 0 && (
           <p className="text-xs mt-3" style={{ color: "rgba(255,255,255,0.5)" }}>
