@@ -1,19 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-// Recipes are Session 3's first real feature beyond households. Visibility
-// ('public' | 'friends' | 'private') is enforced by the recipes_select_visible
-// RLS policy, so the GET handler below doesn't re-implement that logic - it
-// just runs the query a signed-in user is allowed to run, and Postgres
-// filters out anything they shouldn't see.
-//
-// Note: the initial Profile and Discover pages fetch recipes directly with
-// the server Supabase client (same pattern as /profile's household/friend
-// counts), not through this GET route - that matches how this app's reads
-// already work. GET is exposed here anyway as a plain JSON endpoint for any
-// future client-driven view (e.g. infinite scroll) that needs to refetch
-// without a full page reload.
-
 const VISIBILITY_VALUES = ["public", "friends", "private"];
 
 function toStringArray(value: unknown): string[] {
@@ -39,9 +26,7 @@ export async function POST(request: Request) {
     : "private";
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "You must be signed in." }, { status: 401 });
@@ -57,8 +42,6 @@ export async function POST(request: Request) {
         typeof body.ingredients === "string" ? body.ingredients.trim() || null : null,
       source_url:
         typeof body.source_url === "string" ? body.source_url.trim() || null : null,
-      meal_category:
-        typeof body.meal_category === "string" ? body.meal_category.trim() || null : null,
       cuisine_tags: toStringArray(body.cuisine_tags),
       dietary_tags: toStringArray(body.dietary_tags),
       visibility,
@@ -76,14 +59,12 @@ export async function POST(request: Request) {
   return NextResponse.json({ ok: true, recipeId: recipe.id });
 }
 
-// GET /api/recipes            -> discover feed (other people's recipes)
-// GET /api/recipes?mine=1     -> the signed-in user's own recipes
-// Optional filters: meal_category, cuisine
+// GET /api/recipes             → all recipes visible to user
+// GET /api/recipes?mine=1      → current user's own recipes
+// GET /api/recipes?q=keyword   → search across name + ingredients
 export async function GET(request: Request) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "You must be signed in." }, { status: 401 });
@@ -91,22 +72,26 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const mine = searchParams.get("mine") === "1";
-  const mealCategory = searchParams.get("meal_category");
+  const q = searchParams.get("q")?.trim() ?? "";
   const cuisine = searchParams.get("cuisine");
 
   let query = supabase
     .from("recipes")
     .select(
-      "id, owner_id, name, story, source_url, meal_category, cuisine_tags, dietary_tags, visibility, save_count, created_at, users(name)"
+      "id, owner_id, name, story, source_url, cuisine_tags, dietary_tags, visibility, save_count, created_at, users(name)"
     )
     .order("created_at", { ascending: false })
-    .limit(50);
+    .limit(100);
 
-  query = mine ? query.eq("owner_id", user.id) : query.neq("owner_id", user.id);
-
-  if (mealCategory) {
-    query = query.eq("meal_category", mealCategory);
+  if (mine) {
+    query = query.eq("owner_id", user.id);
   }
+
+  if (q) {
+    const term = `%${q}%`;
+    query = query.or(`name.ilike.${term},ingredients.ilike.${term}`);
+  }
+
   if (cuisine) {
     query = query.contains("cuisine_tags", [cuisine]);
   }
