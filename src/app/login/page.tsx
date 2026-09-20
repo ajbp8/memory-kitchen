@@ -41,7 +41,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (data?.error) message = data.error;
     } catch {
-      // Non-JSON error response (e.g. unexpected redirect/405) — fall back to generic message.
+      // Non-JSON error response — fall back to generic message.
     }
     setErrorMsg(message);
     setStatus("error");
@@ -69,16 +69,14 @@ export default function LoginPage() {
       return;
     }
 
-    // Full reload, not a client-side route change — the new session cookie
-    // needs to be sent on the next request so the server middleware (which
-    // gates every page) actually sees it.
+    // Full reload so the new session cookie is sent on the next server request.
     window.location.assign("/");
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 bg-[var(--mk-cream)]">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center mb-1" style={{ color: "var(--mk-terracotta)" }}>
+        <h1 className="text-2xl font-bold text-center mb-1" style={{ color: "#1B5E2E" }}>
           Memory Kitchen
         </h1>
         <p className="text-center text-sm text-neutral-500 mb-8">
@@ -93,15 +91,15 @@ export default function LoginPage() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-[var(--mk-border)] px-4 py-3 text-sm outline-none focus:border-[var(--mk-terracotta)]"
+              className="w-full rounded-xl border border-[var(--mk-border)] px-4 py-3 text-sm outline-none focus:border-[var(--mk-gold)]"
             />
             <button
               type="submit"
               disabled={status === "working"}
-              className="w-full rounded-xl py-3 text-sm font-semibold text-white"
-              style={{ background: "linear-gradient(to right, #c8602a, #e8854a)" }}
+              className="w-full rounded-xl py-3 text-sm font-semibold text-white disabled:opacity-50"
+              style={{ background: "#D4A017" }}
             >
-              {status === "working" ? "Sending..." : "Send sign-in code"}
+              {status === "working" ? "Sending…" : "Send sign-in code"}
             </button>
             {status === "error" && (
               <p className="text-sm text-red-600 text-center">{errorMsg}</p>
@@ -120,27 +118,22 @@ export default function LoginPage() {
               placeholder="123456"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full rounded-xl border border-[var(--mk-border)] px-4 py-3 text-center text-lg tracking-widest outline-none focus:border-[var(--mk-terracotta)]"
+              className="w-full rounded-xl border border-[var(--mk-border)] px-4 py-3 text-center text-lg tracking-widest outline-none focus:border-[var(--mk-gold)]"
             />
             <button
               type="submit"
               disabled={status === "working"}
-              className="w-full rounded-xl py-3 text-sm font-semibold text-white"
-              style={{ background: "linear-gradient(to right, #c8602a, #e8854a)" }}
+              className="w-full rounded-xl py-3 text-sm font-semibold text-white disabled:opacity-50"
+              style={{ background: "#D4A017" }}
             >
-              {status === "working" ? "Verifying..." : "Verify code"}
+              {status === "working" ? "Verifying…" : "Verify code"}
             </button>
             {status === "error" && (
               <p className="text-sm text-red-600 text-center">{errorMsg}</p>
             )}
             <button
               type="button"
-              onClick={() => {
-                setStep("email");
-                setCode("");
-                setErrorMsg("");
-                setStatus("idle");
-              }}
+              onClick={() => { setStep("email"); setCode(""); setErrorMsg(""); setStatus("idle"); }}
               className="w-full text-center text-xs text-neutral-400 underline"
             >
               Use a different email
