@@ -245,7 +245,7 @@ export default function WeekMenu({
             <span style={{ color: "#FFE580" }}> Kitchen</span>
           </span>
         </div>
-        <p className="text-xs font-medium mb-4 pl-9" style={{ color: "rgba(255,255,255,0.6)" }}>Cook with a smile ✨</p>
+        <p className="text-xs font-medium mb-4 pl-9" style={{ color: "rgba(255,255,255,0.6)" }}>Maman, what's for dinner? 😊</p>
 
         <div ref={searchContainerRef} className="relative">
           <input
