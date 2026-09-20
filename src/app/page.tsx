@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import WeekMenu from "@/components/WeekMenu";
 
-type Dish = { id: string; recipe_id: string | null; free_text: string | null; recipes?: { name: string; meal_category: string | null; cuisine_tags: string[] | null } | null };
+type Dish = { id: string; recipe_id: string | null; free_text: string | null; recipes?: { name: string; cuisine_tags: string[] | null } | null };
 type Slot = { id: string; day_date: string; meal_type: string; dishes: Dish[] };
 type WeekData = { week_id: string | null; slots: Slot[] };
 
@@ -29,7 +29,7 @@ export default async function HomePage() {
       .maybeSingle(),
     supabase
       .from("recipes")
-      .select("id, name, meal_category, cuisine_tags")
+      .select("id, name, cuisine_tags")
       .eq("owner_id", user.id)
       .order("name"),
   ]);
@@ -49,7 +49,7 @@ export default async function HomePage() {
           id, day_date, meal_type,
           menu_dishes (
             id, recipe_id, free_text, sort_order,
-            recipes ( name, meal_category, cuisine_tags )
+            recipes ( name, cuisine_tags )
           )
         )
       `)
