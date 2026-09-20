@@ -1,17 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-// Switched from a clickable magic link to a typed 6-digit code. The link
-// version kept failing with "Email link is invalid or has expired" even on
-// freshly-sent emails — Supabase's auth logs showed the token being
-// consumed by a /verify request seconds after send, well before the user
-// could have clicked it. That matches email link-scanners (e.g. Gmail's
-// safe-browsing prefetch) visiting the URL to check it, which burns the
-// single-use token before the real click ever happens. A typed code has no
-// URL for a scanner to visit, so it isn't vulnerable to this.
 export default function LoginPage() {
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
@@ -69,18 +62,33 @@ export default function LoginPage() {
       return;
     }
 
-    // Full reload so the new session cookie is sent on the next server request.
     window.location.assign("/");
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 bg-[var(--mk-cream)]">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center mb-1" style={{ color: "#1B5E2E" }}>
+
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/icons/icon-192.png"
+            alt="Memory Kitchen"
+            width={80}
+            height={80}
+            className="rounded-2xl"
+            priority
+          />
+        </div>
+
+        {/* Title */}
+        <h1 className="text-2xl font-bold text-center mb-2" style={{ color: "#1B5E2E" }}>
           Memory Kitchen
         </h1>
-        <p className="text-center text-sm text-neutral-500 mb-8">
-          Sign in to your family&apos;s recipe network
+
+        {/* Tagline */}
+        <p className="text-center text-sm text-neutral-500 mb-8 italic">
+          &ldquo;Une cuisine sans saveur est comme une vie sans amour&rdquo;
         </p>
 
         {step === "email" ? (
@@ -142,7 +150,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-xs text-neutral-400 mt-8">
-          New here? You&apos;ll need an invite link from a family member.{" "}
+          Invite only network of good people.{" "}
           <Link href="/join" className="underline">
             Have an invite code?
           </Link>
