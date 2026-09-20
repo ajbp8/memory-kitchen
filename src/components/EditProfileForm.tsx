@@ -25,7 +25,6 @@ export default function EditProfileForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Preview immediately
     const localUrl = URL.createObjectURL(file);
     setAvatarUrl(localUrl);
     setAvatarUploading(true);
@@ -33,8 +32,6 @@ export default function EditProfileForm({
 
     try {
       const supabase = createClient();
-
-      // Determine extension from mime type
       const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
       const path = `${userId}.${ext}`;
 
@@ -44,10 +41,7 @@ export default function EditProfileForm({
 
       if (uploadError) throw uploadError;
 
-      const { data: urlData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(path);
-
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const publicUrl = urlData.publicUrl;
 
       const { error: dbError } = await supabase
@@ -57,14 +51,12 @@ export default function EditProfileForm({
 
       if (dbError) throw dbError;
 
-      // Add cache-buster so the browser reloads the image
       setAvatarUrl(publicUrl + "?t=" + Date.now());
     } catch {
       setError("Couldn't upload photo. Try again.");
       setAvatarUrl(initialAvatarUrl ?? null);
     } finally {
       setAvatarUploading(false);
-      // Reset input so re-selecting the same file triggers onChange
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }
@@ -99,43 +91,46 @@ export default function EditProfileForm({
         onChange={handleAvatarChange}
       />
 
-      {/* Tappable avatar */}
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        disabled={avatarUploading}
-        className="relative w-20 h-20 rounded-full mb-3 overflow-hidden flex-shrink-0 focus:outline-none"
-        style={{ border: "2.5px solid rgba(255,255,255,0.4)" }}
-        aria-label="Change profile photo"
-      >
-        {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={avatarUrl}
-            alt="Profile photo"
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center text-2xl font-bold text-white"
-            style={{ background: "rgba(255,255,255,0.2)" }}
-          >
-            {initials}
-          </div>
-        )}
-
-        {/* Camera badge */}
+      {/* Avatar + camera badge wrapper — badge is OUTSIDE overflow-hidden */}
+      <div className="relative mb-3 cursor-pointer" onClick={() => !avatarUploading && fileInputRef.current?.click()}>
+        {/* Circle avatar */}
         <div
-          className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center text-xs"
-          style={{ background: "#D4A017", color: "white" }}
+          className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0"
+          style={{ border: "2.5px solid rgba(255,255,255,0.4)" }}
         >
-          {avatarUploading ? (
-            <span className="animate-spin text-[9px]">◌</span>
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={avatarUrl}
+              alt="Profile photo"
+              className="w-full h-full object-cover"
+            />
           ) : (
-            <span>📷</span>
+            <div
+              className="w-full h-full flex items-center justify-center text-2xl font-bold text-white"
+              style={{ background: "rgba(255,255,255,0.2)" }}
+            >
+              {initials}
+            </div>
           )}
         </div>
-      </button>
+
+        {/* Camera badge — outside overflow-hidden, sits on top */}
+        <div
+          className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center"
+          style={{ background: "#D4A017", border: "2px solid rgba(27,94,46,0.8)" }}
+          aria-label="Change profile photo"
+        >
+          {avatarUploading ? (
+            <span className="animate-spin text-white text-[10px]">◌</span>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          )}
+        </div>
+      </div>
 
       {/* Name */}
       {editing ? (
