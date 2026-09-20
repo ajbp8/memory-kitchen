@@ -87,7 +87,7 @@ export default function LoginPage() {
         </h1>
 
         {/* Tagline */}
-        <p className="text-center text-sm text-neutral-500 mb-8 italic">
+        <p className="text-center text-xs text-neutral-500 mb-8 italic">
           &ldquo;Une cuisine sans saveur est comme une vie sans amour&rdquo;
         </p>
 
