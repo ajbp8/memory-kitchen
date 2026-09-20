@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+:root {
+  /* Masters-inspired palette */
+  --mk-green:           #1B5E2E;   /* Augusta deep green  */
+  --mk-green-mid:       #2E7A3E;   /* mid green for gradients */
+  --mk-gold:            #D4A017;   /* Masters gold — buttons, active states */
+  --mk-gold-light:      #F2C94C;   /* lighter gold for highlights */
+  --mk-cream:           #F8F6EE;   /* warm ivory background */
+  --mk-border:          #E0D8C8;   /* warm border */
+
+  /* Keep --mk-terracotta pointing to gold so existing components pick it up */
+  --mk-terracotta:      var(--mk-gold);
+  --mk-terracotta-light: var(--mk-gold-light);
+
+  --background: var(--mk-cream);
+  --foreground: #1a1a1a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
