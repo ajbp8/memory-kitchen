@@ -3,15 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const MEAL_CATEGORIES = ["breakfast", "lunch", "dinner", "snack", "dessert", "other"];
-
 type Recipe = {
   id: string;
   name: string;
   story: string | null;
   source_url: string | null;
   ingredients: string[] | string | null;
-  meal_category: string | null;
 };
 
 function ingredientsToText(ingredients: string[] | string | null): string {
@@ -27,7 +24,6 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
   const [story, setStory] = useState(recipe.story ?? "");
   const [sourceUrl, setSourceUrl] = useState(recipe.source_url ?? "");
   const [ingredients, setIngredients] = useState(ingredientsToText(recipe.ingredients));
-  const [mealCategory, setMealCategory] = useState(recipe.meal_category ?? "");
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -36,12 +32,7 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
     setStatus("saving");
     setErrorMsg("");
 
-    // Convert ingredients textarea → string array (split by line, trim, drop empty)
-    const ingredientsArray = ingredients
-      .split("\n")
-      .map((l) => l.trim())
-      .filter(Boolean);
-
+    // Convert ingredients textarea → string (store as plain text)
     const res = await fetch(`/api/recipes/${recipe.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -49,8 +40,7 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
         name: name.trim(),
         story: story.trim() || null,
         source_url: sourceUrl.trim() || null,
-        ingredients: ingredientsArray.length > 0 ? ingredientsArray : null,
-        meal_category: mealCategory || null,
+        ingredients: ingredients.trim() || null,
       }),
     });
 
@@ -61,7 +51,6 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
       return;
     }
 
-    // Back to the recipe detail page
     router.push(`/recipes/${recipe.id}`);
     router.refresh();
   }
@@ -75,49 +64,35 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
 
       {/* Name */}
       <div>
-        <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "#D4A017" }}>
+        <label
+          className="text-[10px] font-bold uppercase tracking-wider block mb-1.5"
+          style={{ color: "#D4A017" }}
+        >
           Recipe name *
         </label>
         <input
           required
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={e => setName(e.target.value)}
           className={inputClass}
           style={borderStyle}
           placeholder="e.g. Chicken & Zucchini Fritters"
         />
       </div>
 
-      {/* Meal category */}
-      <div>
-        <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "#D4A017" }}>
-          Meal type
-        </label>
-        <select
-          value={mealCategory}
-          onChange={(e) => setMealCategory(e.target.value)}
-          className={inputClass}
-          style={borderStyle}
-        >
-          <option value="">— choose one —</option>
-          {MEAL_CATEGORIES.map((c) => (
-            <option key={c} value={c} className="capitalize">
-              {c.charAt(0).toUpperCase() + c.slice(1)}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Story / note */}
       <div>
-        <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "#D4A017" }}>
+        <label
+          className="text-[10px] font-bold uppercase tracking-wider block mb-1.5"
+          style={{ color: "#D4A017" }}
+        >
           Story / note
         </label>
         <textarea
           rows={3}
           value={story}
-          onChange={(e) => setStory(e.target.value)}
+          onChange={e => setStory(e.target.value)}
           className={inputClass}
           style={borderStyle}
           placeholder="Where did you find this? What makes it special?"
@@ -126,13 +101,17 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
 
       {/* Ingredients */}
       <div>
-        <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "#D4A017" }}>
-          Ingredients <span className="normal-case font-normal opacity-60">(one per line)</span>
+        <label
+          className="text-[10px] font-bold uppercase tracking-wider block mb-1.5"
+          style={{ color: "#D4A017" }}
+        >
+          Ingredients{" "}
+          <span className="normal-case font-normal opacity-60">(one per line)</span>
         </label>
         <textarea
           rows={5}
           value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
+          onChange={e => setIngredients(e.target.value)}
           className={inputClass}
           style={borderStyle}
           placeholder={"2 chicken breasts\n1 zucchini\n1 egg\n…"}
@@ -141,13 +120,16 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
 
       {/* Source URL */}
       <div>
-        <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "#D4A017" }}>
+        <label
+          className="text-[10px] font-bold uppercase tracking-wider block mb-1.5"
+          style={{ color: "#D4A017" }}
+        >
           Source URL
         </label>
         <input
           type="url"
           value={sourceUrl}
-          onChange={(e) => setSourceUrl(e.target.value)}
+          onChange={e => setSourceUrl(e.target.value)}
           className={inputClass}
           style={borderStyle}
           placeholder="https://www.instagram.com/reel/…"

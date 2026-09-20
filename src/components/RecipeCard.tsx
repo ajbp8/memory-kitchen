@@ -3,41 +3,49 @@ import Link from "next/link";
 export type RecipeCardData = {
   id: string;
   name: string;
-  meal_category?: string | null;
   cuisine_tags?: string[] | null;
   save_count?: number | null;
   users?: { name: string | null } | { name: string | null }[] | null;
 };
 
 const CUISINE_STYLES: Record<string, { emoji: string; bg: string }> = {
-  italian:       { emoji: "🍝", bg: "#c8602a" },
-  mexican:       { emoji: "🌮", bg: "#b8482e" },
-  indian:        { emoji: "🍛", bg: "#a8512a" },
-  chinese:       { emoji: "🥡", bg: "#b8362e" },
-  japanese:      { emoji: "🍣", bg: "#4a6b5a" },
-  thai:          { emoji: "🍜", bg: "#4a7a4a" },
-  french:        { emoji: "🥐", bg: "#5a5a8a" },
+  italian: { emoji: "🍝", bg: "#c8602a" },
+  pasta: { emoji: "🍝", bg: "#c8602a" },
+  mexican: { emoji: "🌮", bg: "#b8482e" },
+  indian: { emoji: "🍛", bg: "#a8512a" },
+  chinese: { emoji: "🥡", bg: "#b8362e" },
+  japanese: { emoji: "🍣", bg: "#4a6b5a" },
+  thai: { emoji: "🍜", bg: "#4a7a4a" },
+  french: { emoji: "🥐", bg: "#5a5a8a" },
   mediterranean: { emoji: "🥙", bg: "#3a7a7a" },
-  american:      { emoji: "🍔", bg: "#c8602a" },
-  asian:         { emoji: "🍜", bg: "#4a7a6a" },
-  "middle-eastern": { emoji: "🫙", bg: "#8a6a2a" },
-  dessert:       { emoji: "🍰", bg: "#b85a8a" },
-  baking:        { emoji: "🍞", bg: "#c89050" },
+  american: { emoji: "🍔", bg: "#c8602a" },
+  asian: { emoji: "🍜", bg: "#4a7a6a" },
+  chicken: { emoji: "🍗", bg: "#c8802a" },
+  fish: { emoji: "🐟", bg: "#3a7a9a" },
+  salmon: { emoji: "🐟", bg: "#3a7a9a" },
+  beef: { emoji: "🥩", bg: "#8a3a2a" },
+  pork: { emoji: "🥩", bg: "#9a4a3a" },
+  vegetarian: { emoji: "🥗", bg: "#3a8a4a" },
+  vegan: { emoji: "🌱", bg: "#4a9a4a" },
+  soup: { emoji: "🍲", bg: "#8a6a2a" },
+  salad: { emoji: "🥗", bg: "#4a8a5a" },
+  dessert: { emoji: "🍰", bg: "#b85a8a" },
+  cake: { emoji: "🎂", bg: "#c85a8a" },
+  baking: { emoji: "🍞", bg: "#c89050" },
+  bread: { emoji: "🍞", bg: "#c89050" },
+  rice: { emoji: "🍚", bg: "#7a8a4a" },
+  egg: { emoji: "🍳", bg: "#c8a040" },
+  eggs: { emoji: "🍳", bg: "#c8a040" },
 };
 
-const MEAL_EMOJI: Record<string, string> = {
-  breakfast: "🍳",
-  lunch: "🥪",
-  dinner: "🍽️",
-  snack: "🍿",
-  dessert: "🍰",
-};
-
-function styleFor(cuisineTags: string[] | null | undefined, mealCategory: string | null | undefined) {
-  const firstTag = cuisineTags?.[0]?.toLowerCase();
-  if (firstTag && CUISINE_STYLES[firstTag]) return CUISINE_STYLES[firstTag];
-  const mealKey = mealCategory?.toLowerCase();
-  return { emoji: (mealKey && MEAL_EMOJI[mealKey]) || "🍽️", bg: "#c8860a" };
+function styleFor(cuisineTags: string[] | null | undefined) {
+  if (cuisineTags) {
+    for (const tag of cuisineTags) {
+      const key = tag.toLowerCase();
+      if (CUISINE_STYLES[key]) return CUISINE_STYLES[key];
+    }
+  }
+  return { emoji: "🍽️", bg: "#c8860a" };
 }
 
 function ownerName(users: RecipeCardData["users"]) {
@@ -52,7 +60,7 @@ export default function RecipeCard({
   recipe: RecipeCardData;
   mutualFriends?: number;
 }) {
-  const { emoji, bg } = styleFor(recipe.cuisine_tags, recipe.meal_category);
+  const { emoji, bg } = styleFor(recipe.cuisine_tags);
   const owner = ownerName(recipe.users);
 
   return (
@@ -61,7 +69,7 @@ export default function RecipeCard({
       className="flex items-center gap-3 py-2.5 border-b"
       style={{ borderColor: "var(--mk-border)" }}
     >
-      {/* Small cuisine chip */}
+      {/* Cuisine chip */}
       <div
         className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
         style={{ background: bg }}
@@ -92,8 +100,13 @@ export default function RecipeCard({
       </span>
 
       {/* Chevron */}
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
-        <path d="M4 2l4 4-4 4"/>
+      <svg
+        width="12" height="12" viewBox="0 0 12 12"
+        fill="none" stroke="#ccc" strokeWidth="1.5"
+        strokeLinecap="round" strokeLinejoin="round"
+        className="flex-shrink-0"
+      >
+        <path d="M4 2l4 4-4 4" />
       </svg>
     </Link>
   );
