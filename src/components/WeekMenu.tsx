@@ -2,8 +2,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 
-type Recipe = { id: string; name: string; meal_category: string | null; cuisine_tags: string[] | null };
-type Dish = { id: string; recipe_id: string | null; free_text: string | null; recipes?: { name: string; meal_category: string | null; cuisine_tags: string[] | null } | null };
+type Recipe = { id: string; name: string; cuisine_tags: string[] | null };
+type Dish = { id: string; recipe_id: string | null; free_text: string | null; recipes?: { name: string; cuisine_tags: string[] | null } | null };
 type Slot = { id: string; day_date: string; meal_type: string; dishes: Dish[] };
 type WeekData = { week_id: string | null; slots: Slot[] };
 type NestorSuggestion = { name: string; description: string; cookTime?: string };
@@ -22,7 +22,7 @@ const MEAL_TABS = [
   { key: "breakfast", label: "Breakfast", icon: "🌅" },
 ];
 
-function getEmoji(r: { cuisine_tags: string[] | null; meal_category: string | null }) {
+function getEmoji(r: { cuisine_tags: string[] | null }) {
   const t = r.cuisine_tags?.[0]?.toLowerCase();
   return (t && CUISINE_EMOJI[t]) || "🍽️";
 }
