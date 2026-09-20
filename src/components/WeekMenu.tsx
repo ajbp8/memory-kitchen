@@ -231,7 +231,7 @@ export default function WeekMenu({
   if (!mounted) return null;
 
   return (
-    <div className="pb-20 flex flex-col" style={{ height: "100dvh", overflowY: "auto", background: "var(--mk-cream)" }}>
+    <div className="flex flex-col" style={{ height: "100dvh", background: "var(--mk-cream)" }}>
 
       {/* ── Banner ── */}
       <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }} className="px-5 pt-10 pb-4">
@@ -328,9 +328,9 @@ export default function WeekMenu({
           className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>next →</button>
       </div>
 
-      {/* ── Day cards ── */}
-      <div className="px-4 pt-3 flex-1 flex flex-col">
-        <div className="space-y-2">
+      {/* ── Day cards (scrollable) ── */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="px-4 pt-3 pb-4 space-y-2">
         {loading ? (
           Array.from({ length: 7 }, (_, i) => (
             <div key={i} className="bg-white rounded-xl border px-4 py-3 animate-pulse" style={{ borderColor: "var(--mk-border)" }}>
@@ -459,11 +459,12 @@ export default function WeekMenu({
           );
         })}
         </div>
+      </div>
 
-        {/* ── Recipe Genie ── */}
-        {!loading && (
-          <div className="flex-1 flex items-center py-8">
-            <div className="w-full rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
+      {/* ── Recipe Genie (pinned above bottom nav) ── */}
+      {!loading && (
+        <div className="px-4 py-5 flex-shrink-0">
+            <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
               {/* Header strip */}
               <div className="px-4 py-3 flex items-center gap-2.5"
                 style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}>
@@ -523,9 +524,9 @@ export default function WeekMenu({
                 )}
               </div>
             </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
+      <div className="h-20 flex-shrink-0" />
 
       {/* ── Day detail bottom sheet ── */}
       {selectedDay && (
