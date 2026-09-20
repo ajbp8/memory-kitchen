@@ -9,11 +9,12 @@ export default async function ProfilePage() {
   if (!user) return null;
 
   const [profileResult, recipesResult] = await Promise.all([
-    supabase.from("users").select("name").eq("id", user.id).maybeSingle(),
+    supabase.from("users").select("name, avatar_url").eq("id", user.id).maybeSingle(),
     supabase.from("recipes").select("id", { count: "exact", head: true }).eq("owner_id", user.id),
   ]);
 
   const displayName = profileResult.data?.name || user.email?.split("@")[0] || "there";
+  const avatarUrl = profileResult.data?.avatar_url ?? null;
   const recipeCount = recipesResult.count ?? 0;
 
   return (
@@ -22,7 +23,11 @@ export default async function ProfilePage() {
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}
         className="px-5 pt-10 pb-8 text-center">
-        <EditProfileForm userId={user.id} initialName={displayName} />
+        <EditProfileForm
+          userId={user.id}
+          initialName={displayName}
+          initialAvatarUrl={avatarUrl}
+        />
         <div className="flex justify-center gap-8 mt-4">
           <div className="text-center">
             <p className="text-lg font-bold text-white">{recipeCount}</p>
