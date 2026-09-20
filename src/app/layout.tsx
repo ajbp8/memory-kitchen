@@ -8,27 +8,13 @@ export const metadata: Metadata = {
   title: "Memory Kitchen",
   description: "A mobile-first recipe sharing network for family and friends.",
   manifest: "/manifest.json",
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "Memory Kitchen",
-  },
-  icons: {
-    icon: "/icons/icon-192.png",
-    apple: "/icons/apple-touch-icon.png",
-  },
-  openGraph: {
-    title: "Memory Kitchen",
-    description: "A mobile-first recipe sharing network for family and friends.",
-    images: [
-      {
-        url: "/api/og",
-        width: 1200,
-        height: 630,
-        alt: "Memory Kitchen",
-      },
-    ],
-    type: "website",
   },
 };
 
@@ -36,7 +22,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#3E7B5A",
+  themeColor: "#1B5E2E",
 };
 
 export default function RootLayout({
