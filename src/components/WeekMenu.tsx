@@ -231,7 +231,7 @@ export default function WeekMenu({
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "var(--mk-cream)" }}>
+    <div className="pb-20 flex flex-col" style={{ height: "100dvh", overflowY: "auto", background: "var(--mk-cream)" }}>
 
       {/* ── Banner ── */}
       <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }} className="px-5 pt-10 pb-4">
@@ -329,7 +329,8 @@ export default function WeekMenu({
       </div>
 
       {/* ── Day cards ── */}
-      <div className="px-4 pt-3 pb-4 space-y-2">
+      <div className="px-4 pt-3 flex-1 flex flex-col">
+        <div className="space-y-2">
         {loading ? (
           Array.from({ length: 7 }, (_, i) => (
             <div key={i} className="bg-white rounded-xl border px-4 py-3 animate-pulse" style={{ borderColor: "var(--mk-border)" }}>
@@ -457,11 +458,12 @@ export default function WeekMenu({
             </div>
           );
         })}
+        </div>
 
         {/* ── Recipe Genie ── */}
         {!loading && (
-          <div className="mt-6">
-            <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
+          <div className="flex-1 flex items-center py-8">
+            <div className="w-full rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
               {/* Header strip */}
               <div className="px-4 py-3 flex items-center gap-2.5"
                 style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}>
@@ -523,7 +525,6 @@ export default function WeekMenu({
             </div>
           </div>
         )}
-        <div className="h-4" />
       </div>
 
       {/* ── Day detail bottom sheet ── */}
