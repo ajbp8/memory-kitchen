@@ -237,7 +237,7 @@ export default function WeekMenu({
     <div className="min-h-screen pb-20" style={{ background: "var(--mk-cream)" }}>
 
       {/* ── Banner ── */}
-      <div style={{ background: "linear-gradient(135deg, #3E7B5A 0%, #6AAF88 100%)" }} className="px-5 pt-10 pb-4">
+      <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }} className="px-5 pt-10 pb-4">
         <div className="flex items-center gap-2.5 mb-0.5">
           <RingsLogo />
           <span style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1 }}>
@@ -270,14 +270,14 @@ export default function WeekMenu({
                   style={{ borderColor: "var(--mk-border)", scrollbarWidth: "none" }}>
                   <button onClick={() => setActiveFilters([])}
                     className="flex-shrink-0 text-[11px] font-bold px-3 py-1 rounded-full"
-                    style={{ background: activeFilters.length === 0 ? "var(--mk-terracotta)" : "rgba(62,123,90,0.1)", color: activeFilters.length === 0 ? "white" : "var(--mk-terracotta)" }}
+                    style={{ background: activeFilters.length === 0 ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: activeFilters.length === 0 ? "white" : "var(--mk-terracotta)" }}
                   >All</button>
                   {cuisineOptions.map(tag => {
                     const active = activeFilters.includes(tag);
                     return (
                       <button key={tag} onClick={() => toggleFilter(tag)}
                         className="flex-shrink-0 text-[11px] font-bold px-3 py-1 rounded-full capitalize"
-                        style={{ background: active ? "var(--mk-terracotta)" : "rgba(62,123,90,0.1)", color: active ? "white" : "var(--mk-terracotta)" }}
+                        style={{ background: active ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: active ? "white" : "var(--mk-terracotta)" }}
                       >{CUISINE_EMOJI[tag] ?? "🍽️"} {tag}</button>
                     );
                   })}
@@ -358,7 +358,7 @@ export default function WeekMenu({
                 border: isDragTarget ? "2px dashed var(--mk-terracotta)"
                   : isToday ? "1.5px solid var(--mk-terracotta)"
                   : "1px solid var(--mk-border)",
-                background: isDragTarget ? "rgba(62,123,90,0.04)" : undefined,
+                background: isDragTarget ? "rgba(212,160,23,0.06)" : undefined,
               }}
               onDragOver={e => { if (!isPast) { e.preventDefault(); setDragOver(day); } }}
               onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(null); }}
@@ -466,9 +466,9 @@ export default function WeekMenu({
           <div className="mt-1">
             <div className="bg-white rounded-xl border px-4 py-4" style={{ borderColor: "var(--mk-border)" }}>
               <div className="flex items-center gap-2 mb-3">
-                <span style={{ fontSize: "18px" }}>✦</span>
+                <span style={{ fontSize: "18px", color: "#1B5E2E" }}>✦</span>
                 <div>
-                  <p className="text-sm font-bold" style={{ color: "#3E7B5A" }}>Ask Nestor</p>
+                  <p className="text-sm font-bold" style={{ color: "#1B5E2E" }}>Ask Nestor</p>
                   <p className="text-[10px] text-neutral-400">e.g. "sardines and pasta" or "quick chicken dinner"</p>
                 </div>
               </div>
@@ -540,7 +540,7 @@ export default function WeekMenu({
                   return (
                     <button key={tab.key} onClick={() => setSelectedMealTab(tab.key)}
                       className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-semibold transition-colors"
-                      style={{ background: isActive ? "var(--mk-terracotta)" : "rgba(62,123,90,0.08)", color: isActive ? "white" : "var(--mk-terracotta)" }}>
+                      style={{ background: isActive ? "var(--mk-terracotta)" : "rgba(212,160,23,0.1)", color: isActive ? "white" : "var(--mk-terracotta)" }}>
                       <span>{tab.icon}</span><span>{tab.label}</span>
                       {count > 0 && (
                         <span className="text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center"
@@ -595,7 +595,7 @@ export default function WeekMenu({
                   return (
                     <button key={r.id} onClick={() => !alreadyAdded && addDish(selectedDay, selectedMealTab, r)}
                       className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 border text-left transition-colors"
-                      style={{ borderColor: "var(--mk-border)", background: alreadyAdded ? "rgba(62,123,90,0.04)" : "white", opacity: alreadyAdded ? 0.6 : 1 }}>
+                      style={{ borderColor: "var(--mk-border)", background: alreadyAdded ? "rgba(212,160,23,0.06)" : "white", opacity: alreadyAdded ? 0.6 : 1 }}>
                       <span className="text-base flex-shrink-0">{getEmoji(r)}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
@@ -630,7 +630,7 @@ export default function WeekMenu({
               {MEAL_TABS.map(tab => (
                 <button key={tab.key} onClick={() => setPendingMealType(tab.key)}
                   className="text-xs px-3 py-1.5 rounded-full font-semibold transition-colors flex items-center gap-1"
-                  style={{ background: pendingMealType === tab.key ? "var(--mk-terracotta)" : "rgba(62,123,90,0.1)", color: pendingMealType === tab.key ? "white" : "var(--mk-terracotta)" }}>
+                  style={{ background: pendingMealType === tab.key ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: pendingMealType === tab.key ? "white" : "var(--mk-terracotta)" }}>
                   <span>{tab.icon}</span> {tab.label}
                 </button>
               ))}
@@ -643,7 +643,7 @@ export default function WeekMenu({
                   <button key={iso} disabled={isPast}
                     onClick={() => !isPast && addDish(iso, pendingMealType, pendingRecipe)}
                     className="flex flex-col items-center py-2 px-1 rounded-xl transition-all active:scale-95 disabled:opacity-40"
-                    style={{ background: isToday ? "var(--mk-terracotta)" : isPast ? "rgba(0,0,0,0.04)" : "rgba(62,123,90,0.08)", color: isToday ? "white" : isPast ? "#bbb" : "var(--mk-terracotta)" }}>
+                    style={{ background: isToday ? "var(--mk-terracotta)" : isPast ? "rgba(0,0,0,0.04)" : "rgba(212,160,23,0.1)", color: isToday ? "white" : isPast ? "#bbb" : "var(--mk-terracotta)" }}>
                     <span className="text-[10px] font-bold">{DAY_LABELS[i]}</span>
                     <span className="text-base font-bold leading-tight">{new Date(iso + "T12:00:00").getDate()}</span>
                   </button>
@@ -672,7 +672,7 @@ export default function WeekMenu({
               {MEAL_TABS.map(tab => (
                 <button key={tab.key} onClick={() => setPendingFreeTextMealType(tab.key)}
                   className="text-xs px-3 py-1.5 rounded-full font-semibold transition-colors flex items-center gap-1"
-                  style={{ background: pendingFreeTextMealType === tab.key ? "var(--mk-terracotta)" : "rgba(62,123,90,0.1)", color: pendingFreeTextMealType === tab.key ? "white" : "var(--mk-terracotta)" }}>
+                  style={{ background: pendingFreeTextMealType === tab.key ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: pendingFreeTextMealType === tab.key ? "white" : "var(--mk-terracotta)" }}>
                   <span>{tab.icon}</span> {tab.label}
                 </button>
               ))}
@@ -685,7 +685,7 @@ export default function WeekMenu({
                   <button key={iso} disabled={isPast}
                     onClick={() => !isPast && addFreeDish(iso, pendingFreeTextMealType, pendingFreeText)}
                     className="flex flex-col items-center py-2 px-1 rounded-xl transition-all active:scale-95 disabled:opacity-40"
-                    style={{ background: isToday ? "var(--mk-terracotta)" : isPast ? "rgba(0,0,0,0.04)" : "rgba(62,123,90,0.08)", color: isToday ? "white" : isPast ? "#bbb" : "var(--mk-terracotta)" }}>
+                    style={{ background: isToday ? "var(--mk-terracotta)" : isPast ? "rgba(0,0,0,0.04)" : "rgba(212,160,23,0.1)", color: isToday ? "white" : isPast ? "#bbb" : "var(--mk-terracotta)" }}>
                     <span className="text-[10px] font-bold">{DAY_LABELS[i]}</span>
                     <span className="text-base font-bold leading-tight">{new Date(iso + "T12:00:00").getDate()}</span>
                   </button>
