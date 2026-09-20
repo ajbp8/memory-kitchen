@@ -460,15 +460,15 @@ export default function WeekMenu({
 
         {/* ── Recipe Genie ── */}
         {!loading && (
-          <div className="mt-1">
+          <div className="mt-6">
             <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
               {/* Header strip */}
               <div className="px-4 py-3 flex items-center gap-2.5"
                 style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}>
                 <span style={{ fontSize: "22px", color: "#FFE580", lineHeight: 1 }}>✦</span>
                 <div>
-                  <p className="text-sm font-black tracking-tight" style={{ color: "white" }}>Recipe Genie</p>
-                  <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.6)" }}>
+                  <p style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1, color: "white" }}>Recipe Genie</p>
+                  <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
                     e.g. &quot;sardines and pasta&quot; or &quot;quick chicken dinner&quot;
                   </p>
                 </div>
