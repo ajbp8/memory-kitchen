@@ -725,7 +725,7 @@ export default function WeekMenu({
                 <button key={tab.key} onClick={() => setPendingFreeTextMealType(tab.key)}
                   className="text-xs px-3 py-1.5 rounded-full font-semibold transition-colors flex items-center gap-1"
                   style={{ background: pendingFreeTextMealType === tab.key ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: pendingFreeTextMealType === tab.key ? "white" : "var(--mk-terracotta)" }}>
-                  <span>{t!b.icon}</span> {tab.label}
+                  <span>{tab.icon}</span> {tab.label}
                 </button>
               ))}
             </div>
