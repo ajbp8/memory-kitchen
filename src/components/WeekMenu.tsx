@@ -12,41 +12,41 @@ const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const CUISINE_EMOJI: Record<string, string> = {
   // Primary categories
-  meat: "ð¥©", poultry: "ð", seafood: "ð", vegetarian: "ð¥¬", dessert: "ð°",
+  meat: "🥩", poultry: "🍗", seafood: "🐟", vegetarian: "🥬", dessert: "🍰",
   // Descriptive tags
-  pasta: "ð", rice: "ð", soup: "ð²", curry: "ð", salad: "ð¥",
+  pasta: "🍝", rice: "🍚", soup: "🍲", curry: "🍛", salad: "🥗",
   // Legacy cuisine names (recipes added before redesign)
-  italian: "ð", mexican: "ð®", indian: "ð", chinese: "ð¥¡", japanese: "ð£",
-  thai: "ð", french: "ð¥", mediterranean: "ð¥", american: "ð",
-  "middle-eastern": "ð«", baking: "ð",
+  italian: "🍝", mexican: "🌮", indian: "🍛", chinese: "🥡", japanese: "🍣",
+  thai: "🍜", french: "🥐", mediterranean: "🥙", american: "🍔",
+  "middle-eastern": "🫙", baking: "🍞",
 };
 const MEAL_TABS = [
-  { key: "dinner",    label: "Dinner",    icon: "ð½ï¸" },
-  { key: "sides",     label: "Sides",     icon: "ð¥" },
-  { key: "lunch",     label: "Lunch",     icon: "âï¸" },
-  { key: "breakfast", label: "Breakfast", icon: "ð" },
+  { key: "dinner",    label: "Dinner",    icon: "🍽️" },
+  { key: "sides",     label: "Sides",     icon: "🥗" },
+  { key: "lunch",     label: "Lunch",     icon: "☀️" },
+  { key: "breakfast", label: "Breakfast", icon: "🌅" },
 ];
 
-// âââ Fixed primary category filter chips âââââââââââââââââââââââââââââââââââââ
+// ─── Fixed primary category filter chips ─────────────────────────────────────
 const CATEGORY_FILTERS = [
   {
-    key: "meat", label: "Meat", emoji: "ð¥©",
+    key: "meat", label: "Meat", emoji: "🥩",
     keywords: ["meat","beef","pork","lamb","veal","steak","bacon","ham","sausage","mince","venison","chorizo","salami","pepperoni","brisket","mutton","meatball","meatballs"],
   },
   {
-    key: "poultry", label: "Poultry", emoji: "ð",
+    key: "poultry", label: "Poultry", emoji: "🍗",
     keywords: ["poultry","chicken","turkey","duck","goose","hen","quail"],
   },
   {
-    key: "seafood", label: "Fish & Seafood", emoji: "ð",
+    key: "seafood", label: "Fish & Seafood", emoji: "🐟",
     keywords: ["seafood","fish","salmon","tuna","cod","haddock","sardine","sardines","prawn","prawns","shrimp","crab","lobster","mussel","mussels","squid","clams","oyster","oysters","scallop","scallops","anchovy","anchovies","trout","halibut","tilapia","mackerel","herring","seabass"],
   },
   {
-    key: "vegetarian", label: "Vegetarian", emoji: "ð¥¬",
+    key: "vegetarian", label: "Vegetarian", emoji: "🥬",
     keywords: [], // matched by absence of all other primary categories
   },
   {
-    key: "dessert", label: "Desserts", emoji: "ð°",
+    key: "dessert", label: "Desserts", emoji: "🍰",
     keywords: ["dessert","cake","brownie","brownies","tart","cheesecake","pudding","mousse","crepe","crepes","donut","doughnut","muffin","muffins","cupcake","sorbet","gelato","tiramisu","macaron","meringue","trifle","flapjack","truffle","fudge","cookie","cookies","biscuit","biscuits","praline","pastry","pie","pavlova"],
   },
 ];
@@ -67,11 +67,11 @@ function matchesFilter(tags: string[] | null, filterKey: string): boolean {
   // Keyword match (backward compat with old tags like ["chicken","italian","pasta"])
   return cat.keywords.some(kw => lowerTags.includes(kw));
 }
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─────────────────────────────────────────────────────────────────────────────
 
 function getEmoji(r: { cuisine_tags: string[] | null }) {
   const t = r.cuisine_tags?.[0]?.toLowerCase();
-  return (t && CUISINE_EMOJI[t]) || "ð½ï¸";
+  return (t && CUISINE_EMOJI[t]) || "🍽️";
 }
 function toISO(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -86,7 +86,7 @@ function getMonday(offsetWeeks: number): Date {
 }
 function formatDayHeader(iso: string, i: number) {
   const d = new Date(iso + "T12:00:00");
-  return `${DAY_LABELS[i]} Â· ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+  return `${DAY_LABELS[i]} · ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 function formatDayFull(iso: string) {
   const d = new Date(iso + "T12:00:00");
@@ -271,7 +271,7 @@ export default function WeekMenu({
   return (
     <div className="min-h-screen pb-20" style={{ background: "var(--mk-cream)" }}>
 
-      {/* ââ Banner ââ */}
+      {/* ── Banner ── */}
       <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }} className="px-5 pt-10 pb-4">
         <div className="flex items-center gap-2.5 mb-0.5">
           <AppLogo />
@@ -280,7 +280,7 @@ export default function WeekMenu({
             <span style={{ color: "#FFE580" }}> Kitchen</span>
           </span>
         </div>
-        <p className="text-xs font-medium mb-4 pl-9" style={{ color: "rgba(255,255,255,0.6)" }}>Maman, what&apos;s for dinner? ð</p>
+        <p className="text-xs font-medium mb-4 pl-9" style={{ color: "rgba(255,255,255,0.6)" }}>Maman, what&apos;s for dinner? 😊</p>
 
         <div ref={searchContainerRef} className="relative">
           <input
@@ -289,13 +289,13 @@ export default function WeekMenu({
             value={search}
             onChange={e => setSearch(e.target.value)}
             onFocus={() => setSearchOpen(true)}
-            placeholder="Search recipes to add to your weekâ¦"
+            placeholder="Search recipes to add to your week…"
             className="w-full rounded-xl px-4 py-2.5 text-sm outline-none pr-10"
             style={{ background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.35)", color: "white" }}
           />
           {(search || activeFilters.length > 0) && (
             <button onClick={() => { setSearch(""); setActiveFilters([]); }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-sm" aria-label="Clear">â</button>
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-sm" aria-label="Clear">✕</button>
           )}
           {isSearchActive && (
             <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl overflow-hidden z-30"
@@ -319,7 +319,7 @@ export default function WeekMenu({
               </div>
               {!search.trim() && activeFilters.length === 0 && (
                 <p className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#bbb" }}>
-                  Browse all Â· {recipes.length} recipes
+                  Browse all · {recipes.length} recipes
                 </p>
               )}
               {(search.trim() || activeFilters.length > 0) && (() => {
@@ -333,7 +333,7 @@ export default function WeekMenu({
                 }).length;
                 return (
                   <p className="px-3 pt-2 pb-1 text-[10px]" style={{ color: "#bbb" }}>
-                    {searchResults.length} of {totalMatches}{search.trim() ? ` matching "${search.trim()}"` : ""}{totalMatches > searchResults.length ? " â type to narrow" : ""}
+                    {searchResults.length} of {totalMatches}{search.trim() ? ` matching "${search.trim()}"` : ""}{totalMatches > searchResults.length ? " — type to narrow" : ""}
                   </p>
                 );
               })()}
@@ -363,19 +363,19 @@ export default function WeekMenu({
         </div>
       </div>
 
-      {/* ââ Week nav ââ */}
+      {/* ── Week nav ── */}
       <div className="bg-white border-b px-5 py-3 flex items-center justify-between" style={{ borderColor: "var(--mk-border)" }}>
         <button onClick={() => setWeekOffset(o => Math.max(-2, o - 1))} disabled={weekOffset <= -2}
-          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>â prev</button>
+          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>← prev</button>
         <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">
           {weekOffset === 0 ? "This week" : weekOffset === -1 ? "Last week" : weekOffset === 1 ? "Next week"
             : weekOffset < 0 ? `${Math.abs(weekOffset)}w ago` : `In ${weekOffset}w`}
         </span>
         <button onClick={() => setWeekOffset(o => Math.min(2, o + 1))} disabled={weekOffset >= 2}
-          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>next â</button>
+          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>next →</button>
       </div>
 
-      {/* ââ Day cards ââ */}
+      {/* ── Day cards ── */}
       <div className="px-4 pt-3 pb-4 space-y-2">
         {loading ? (
           Array.from({ length: 7 }, (_, i) => (
@@ -439,7 +439,7 @@ export default function WeekMenu({
                   <div className="space-y-1">
                     {dinnerDishes.map(d => (
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">ð½ï¸</span>
+                        <span className="text-[11px] flex-shrink-0">🍽️</span>
                         {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`}
                             className="text-sm font-semibold truncate flex-1 underline-offset-2 hover:underline"
@@ -447,82 +447,87 @@ export default function WeekMenu({
                             {d.recipes?.name ?? d.free_text ?? "Dish"}
                           </Link>
                         ) : (
-                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Dish"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
-                      </div>
-                    ))}
-                    {sidesDishes.map(d => (
-                      <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">ð¥</span>
-                       {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
-                            {d.recipes?.name ?? d.free_text ?? "Side"}
-                          </Link>
-                        ) : (
-                          <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Side"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
-                      </div>
-                    ))}
-                    {lunchDishes.map(d => (
-                      <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">âï¸</span>
-                        {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
-                            {d.recipes?.name ?? d.free_text ?? "Lunch"}
-                          </Link>
-                        ) : (
-                          <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Lunch"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
-                      </div>
-                    ))}
-                    {bfDishes.map(d => (
-                      <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">ð</span>
-                        {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
-                            {d.recipes?.name ?? d.free_text ?? "Breakfast"}
-                          </Link>
-                        ) : (
-                          <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Breakfast"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
-                      </div>
-                    ))}
-                    {isDragTarget && (
-                      <p className="text-xs font-semibold pt-0.5" style={{ color: "var(--mk-terracotta)" }}>+ Drop to add dinner</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                          �[��\�Ә[YOH�^\�H�۝\�[ZX���[��]H�^LH��[O^����܎���XLXLXH�_O�����YW�^���\��O��[���
+_B��]ۈې�X��^�
+HO��[[ݙQ\�
+�Y
+_B��\�Ә[YOH�^[�]]�[L�ݙ\��^\�YM^^XY[��[�ۙH�^\��[��L�[��][ۋX��ܜȈ\�XK[X�[H��[[ݙH����؝]ۏ���]���
+J_B���Y\�\�\˛X\
+O�
+�]��^O^��YH�\�Ә[YOH��^][\�X�[�\��\LK�H�ې�X��^�HO�K�����Y�][ۊ
+_O���[��\�Ә[YOH�^V�L\H�^\��[��L��'�e���[������X�\W�Y�
+�[���Y�^�ܙX�\\�����X�\W�YXH�\�Ә[YOH�^\�H�[��]H�^LH��[O^����܎���MMH�_O�����X�\\�˛�[YH�����YW�^����YH�B��[�ς�
+H�
+��[��\�Ә[YOH�^\�H�[��]H�^LH��[O^����܎���MMH�_O�����YW�^����YH�O��[���
+_B��]ۈې�X��^�
+HO��[[ݙQ\�
+�Y
+_B��\�Ә[YOH�^[�]]�[L�ݙ\��^\�YM^^XY[��[�ۙH�^\��[��L�[��][ۋX��ܜȈ\�XK[X�[H��[[ݙH����؝]ۏ���]���
+J_B��[��\�\˛X\
+O�
+�]��^O^��YH�\�Ә[YOH��^][\�X�[�\��\LK�H�ې�X��^�HO�K�����Y�][ۊ
+_O���[��\�Ә[YOH�^V�L\H�^\��[��L��� ;�#���[������X�\W�Y�
+�[���Y�^�ܙX�\\�����X�\W�YXH�\�Ә[YOH�^\�H�[��]H�^LH��[O^����܎���MMH�_O�����X�\\�˛�[YH�����YW�^���[���B��[�ς�
+H�
+��[��\�Ә[YOH�^\�H�[��]H�^LH��[O^����܎���MMH�_O�����YW�^���[���O��[���
+_B��]ۈې�X��^�
+HO��[[ݙQ\�
+�Y
+_B��\�Ә[YOH�^[�]]�[L�ݙ\��^\�YM^^XY[��[�ۙH�^\��[��L�[��][ۋX��ܜȈ\�XK[X�[H��[[ݙH����؝]ۏ���]���
+J_B�ؙ�\�\˛X\
+O�
+�]��^O^��YH�\�Ә[YOH��^][\�X�[�\��\LK�H�ې�X��^�HO�K�����Y�][ۊ
+_O���[��\�Ә[YOH�^V�L\H�^\��[��L��'�!O��[������X�\W�Y�
+�[���Y�^�ܙX�\\�����X�\W�YXH�\�Ә[YOH�^\�H�[��]H�^LH��[O^����܎���MMH�_O�����X�\\�˛�[YH�����YW�^�����XZ٘\��B��[�ς�
+H�
+��[��\�Ә[YOH�^\�H�[��]H�^LH��[O^����܎���MMH�_O�����YW�^�����XZ٘\��O��[���
+_B��]ۈې�X��^�
+HO��[[ݙQ\�
+�Y
+_B��\�Ә[YOH�^[�]]�[L�ݙ\��^\�YM^^XY[��[�ۙH�^\��[��L�[��][ۋX��ܜȈ\�XK[X�[H��[[ݙH����؝]ۏ���]���
+J_B��\��Y�\��]	��
+��\�Ә[YOH�^^��۝\�[ZX��L�H��[O^����܎���\�K[Z�]\��X��JH�_O�����Y[��\����
+_B��]���
+_B��]����]���
+NJ_B���ʈ8� 8� �X�\H�[�YH8� 8� 
+��B��[�Y[��	��
+�]��\�Ә[YOH�]M����]��\�Ә[YOH���[�Y^ݙ\����ZY[���[O^���ܙ\���K�\��Y�P�QL�H�_O���ʈXY\���\
+��B�]��\�Ә[YOH�MKL��^][\�X�[�\��\L��H���[O^���X��ܛ�[���[�X\�YܘYY[�
+L�YY��P�QL�H	K̑M�L�HL	JH�_O���[��[O^���۝�^�N�������܎��ё�MN�[�RZY��H_O��)���[���]����[O^���۝�ZY��L�۝�^�N�����]\��X�[�Έ�L�\�[�RZY��K��܎���]H�_O��X�\H�[�YO����\�Ә[YOH�^V�LH]L�H��[O^����܎���ؘJ�MK�MK�MK��H�_O��K�ˈ	�][���\�[�\�[�\�I�][��܈	�][��]ZX���X��[�[��\��][�����]����]����ʈ[�]\�XH
+��B�]��\�Ә[YOH�MKLȈ�[O^���X��ܛ�[���ь�ь��_O��]��\�Ә[YOH��^�\L����[�]�\OH�^���[YO^ۙ\�ܔ��\B�ې�[��O^�HO��]�\�ܔ��\
+K�\��]��[YJ_B�ے�^Q�ۏ^�HO�K��^HOOH�[�\��	��\�ә\�܊
+_B�X�Z�\�H��]	��[�[�\��]�[�Ȃ��\�Ә[YOH��^LH��[�Y^L�KL��H^\�H�][�K[�ۙH���[O^���X��ܛ�[����]H��ܙ\���\��Y�ؘJ��M
 
-        {/* ââ Recipe Genie ââ */}
-        {!loading && (
-          <div className="mt-6">
-            <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
-              {/* Header strip */}
-              <div className="px-4 py-3 flex items-center gap-2.5"
-                style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}>
-                <span style={{ fontSize: "22px", color: "#FFE580", lineHeight: 1 }}>â¦</span>
-                <div>
-                  <p style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1, color: "white" }}>Recipe Genie</p>
-                  <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
-                    e.g. &quot;sardines and pasta&quot; or &quot;quick chicken dinner&quot;
-               Â÷à¢ÂöFcà¢ÂöFcà¢²ò¢çWB&V¢÷Ð¢ÆFb6Æ74æÖSÒ'ÓBÓ2"7GÆS×·²&6¶w&÷VæC¢"4cctc""×Óà¢ÆFb6Æ74æÖSÒ&fÆWvÓ"#à¢ÆùÁÕÐ(ÑåÁôÑáÐ(Ù±Õõí¹ÍÑ½ÉAÉ½µÁÑô(½¹
-¡¹õíôøÍÑ9ÍÑ½ÉAÉ½µÁÐ¡¹ÑÉÐ¹Ù±Õ¥ô(½¹-å½Ý¸õíôø¹­äôôô¹ÑÈÍ­9ÍÑ½È ¥ô(Á±¡½±Èô]¡ÐÌ¥¸å½ÕÈ­¥Ñ¡¸ü(±ÍÍ9µô±à´ÄÉ½Õ¹µá°Áà´ÌÁä´È¸ÔÑáÐµÍ´½ÕÑ±¥¹µ¹½¹(ÍÑå±õíì­É½Õ¹èÝ¡¥Ñ°½ÉÈèÅÁàÍ½±¥É ÈÜ°äÐ°ÐØ°À¸ÈÔ¤°½±½ÈèÅÅÅõô(¼ø(ñÕÑÑ½¸(½¹
-±¥¬õíÍ­9ÍÑ½Éô(¥Í±õí¹ÍÑ½É1½¥¹ñð¹ÍÑ½ÉAÉ½µÁÐ¹ÑÉ¥´ ¥ô(±ÍÍ9µôÁà´ÐÁä´È¸ÔÉ½Õ¹µá°ÑáÐµÍ´½¹Ðµ½±ÑÉ¹Í¥Ñ¥½¸µ½Á¥Ñä¥Í±é½Á¥Ñä´ÐÀ±àµÍ¡É¥¹¬´À(ÍÑå±õíì­É½Õ¹èÙÈ ´µµ¬µÑÉÉ½ÑÑ¤°½±½ÈèÝ¡¥Ñõô(ø(í¹ÍÑ½É1½¥¹üè<Hô(ð½ÕÑÑ½¸ø(ð½¥Øø(í¹ÍÑ½É1½¥¹ (ñÀ±ÍÍ9µôÑáÐµáÌµÐ´È¹¥µÑµÁÕ±ÍÍÑå±õíì½±½ÈèÅÕÉõôùI¥Á¹¥¥ÌÑ¡¥¹­¥¹ð½Àø( ¥ô(í¹ÍÑ½ÉÉÉ½È (ñÀ±ÍÍ9µôÑáÐµáÌµÐ´ÈÍÑå±õíì½±½ÈèÙÈ ´µµ¬µÑÉÉ½ÑÑ¤õôùí¹ÍÑ½ÉÉÉ½Éôð½Àø(¥ô(í¹ÍÑ½ÉIÍÕ±ÑÌ¹±¹Ñ øÀ ( ñ¥Ø±ÍÍ9µôµÐ´ÌÍÁµä´Èø(í¹ÍÑ½ÉIÍÕ±ÑÌ¹µÀ ¡È°¤¤ôø (ñ¥Ø­äõí¥ô±ÍÍ9µôÉ½Õ¹µá°Áà´ÌÁä´Ì(ÍÑå±õíì­É½Õ¹èÝ¡¥Ñ°½ÉÈèÅÁàÍ½±¥É ÈÜ°äÐ°ÐØ°À¸Äà¤õôø(ñ¥Ø±ÍÍ9µô±à¥ÑµÌµÍÑÉÐ©ÕÍÑ¥äµÑÝ¸À´Èµ´Äø(ñÀ±ÍÍ9µôÑáÐµÍ´½¹Ðµ½±±¥¹µÍ¹ÕÍÑå±õíì½±½ÈèÅÅÅõôùíÈ¹¹µôð½Àø(íÈ¹½½­Q¥µñÍÁ¸±ÍÍ9µôÑáÐµlÄÁÁátÑáÐµ¹ÕÑÉ°´ÐÀÀ±àµÍ¡É¥¹¬´ÀµÐ´À¸ÔùíÈ¹½½­Q¥µôð½ÍÁ¸ùô(ð½¥Øø(ñÀ±ÍÍ9µôÑáÐµáÌÑáÐµ¹ÕÑÉ°´ÔÀÀ±¥¹µÉ±áµ´È¸ÔùíÈ¹ÍÉ¥ÁÑ¥½¹ôð½Àø(ñÕÑÑ½¸(½¹
-±¥¬õì ¤ôøìÍÑA¹¥¹ÉQáÐ¡È¹¹µ¤ìÍÑA¹¥¹ÉQáÑ5±QåÁ ¥¹¹È¤ìõô(±ÍÍ9µôÑáÐµáÌ½¹Ðµ½±Áà´ÌÁä´Ä¸ÔÉ½Õ¹µ±(ÍÑå±õíì­É½Õ¹èÙÈ ´µµ¬µÑÉÉ½ÑÑ¤°½±½ÈèÝ¡¥Ñõô(ø¬A±¸¥Ðð½ÕÑÑ½¸ø(ð½¥Øø( ¤¥ô(ð½¥Øø(¥ô(ð½¥Øø(ð½¥Øø(ð½¥Øø(¥ô(ñ¥Ø±ÍÍ9µô ´Ð¼ø(ð½¥Øø((ì¼¨RR äÑ¥°½ÑÑ½´Í¡ÐRR ¨½ô(·6VÆV7FVDFbb¢ÆFb6Æ74æÖSÒ&fVBç6WBÓ¢ÓSfÆWFV×2ÖVæB"7GÆS×·²&6¶w&÷VæC¢'&v&ÃÃÃãR"×Ð¢öä6Æ6³×²Óâ6WE6VÆV7FVDFçVÆÂÓà¢ÆFb6Æ74æÖSÒ&&r×vFR&÷VæFVB×BÓ'ÂrÖgVÆÂfÆWfÆWÖ6öÂ ¢7GÆS×·²&÷6F÷s¢#ÓG3&v&ÃÃÃãR"ÂÖVvC¢#Wf"×Ð¢öä6Æ6³×¶RÓâRç7F÷&÷vFöâÓà¢ÆFb6Æ74æÖSÒ'ÓRBÓR"Ó2&÷&FW"Ö"fÆW×6&æ²Ó"7GÆS×·²&÷&FW$6öÆ÷#¢'f"ÒÖÖ²Ö&÷&FW""×Óà¢ÆFb6Æ74æÖSÒ&fÆWFV×2Ö6VçFW"§W7FgÖ&WGvVVâÖ"Ó2#à¢Æ"6Æ74æÖSÒ&föçBÖ&öÆBFWBÖæWWG&ÂÓ#ç¶f÷&ÖDFgVÆÂ6VÆV7FVDFÓÂö#à¢Æ'WGFöâöä6Æ6³×²Óâ6WE6VÆV7FVDFçVÆÂÒ6Æ74æÖSÒ'FWBÖæWWG&ÂÓCFWBÓ'ÂrÓÓfÆWFV×2Ö6VçFW"§W7FgÖ6VçFW"#ì9sÂö'WGFöãà¢ÂöFcà¢ÆFb6Æ74æÖSÒ&fÆWvÓãR#à¢´ÔTÅõD%2æÖF"Óâ°¢6öç7B6÷VçBÒvWDFF6W26VÆV7FVDFÂF"æ¶WæÆVæwF°¢6öç7B47FfRÒ6VÆV7FVDÖVÅF"ÓÓÒF"æ¶W°¢          return (
+���JH���܎���XLXLXH�_B�ς��]ۂ�ې�X��^�\�ә\�ܟB�\�X�Y^ۙ\�ܓ�Y[��[�\�ܔ��\��[J
+_B��\�Ә[YOH�MKL��H��[�Y^^\�H�۝X���[��][ۋ[�X�]H\�X�Y��X�]KM�^\��[��L���[O^���X��ܛ�[����\�K[Z�]\��X��JH���܎���]H�_B���ۙ\�ܓ�Y[�����)������8����B�؝]ۏ���]���ۙ\�ܓ�Y[��	��
+��\�Ә[YOH�^^�]L�[�[X]K\[�H��[O^����܎���P�QL�H�_O��X�\H�[�YH\�[��[���)����
+_B�ۙ\�ܑ\��܈	��
+��\�Ә[YOH�^^�]L���[O^����܎���\�K[Z�]\��X��JH�_O�ۙ\�ܑ\��ܟO���
+_B�ۙ\�ܔ�\�[˛[���	��
+�]��\�Ә[YOH�]L��X�K^KL����ۙ\�ܔ�\�[˛X\
+
+�JHO�
+�]��^O^�_H�\�Ә[YOH���[�Y^L�KLȂ��[O^���X��ܛ�[����]H��ܙ\���\��Y�ؘJ��M
+
+��N
+H�_O��]��\�Ә[YOH��^][\�\�\��\�Y�KX�]�Y[��\L�X�LH����\�Ә[YOH�^\�H�۝X��XY[��\۝YȈ�[O^����܎���XLXLXH�_O�܋��[Y_O���܋�����[YH	���[��\�Ә[YOH�^V�LH^[�]]�[M�^\��[��L]L�H��܋�����[Y_O��[��B��]����\�Ә[YOH�^^�^[�]]�[MLXY[��\�[^YX�L��H��܋�\�ܚ\[۟O����]ۂ�ې�X��^�
+HO���][�[�ќ�YU^
+���[YJN��][�[�ќ�YU^YX[\J�[��\��N�_B��\�Ә[YOH�^^��۝X��L�KLK�H��[�Y[Ȃ��[O^���X��ܛ�[����\�K[Z�]\��X��JH���܎���]H�_B���[�]؝]ۏ���]���
+J_B��]���
+_B��]����]����]���
+_B�]��\�Ә[YOH�M�ς��]�����ʈ8� 8� ^H]Z[���H�Y]8� 8� 
+��B� ��[X�Y^H	��
+�]��\�Ә[YOH��^Y[��]L�ML�^][\�Y[���[O^���X��ܛ�[����ؘJ�JH�_B�ې�X��^�
+HO��]�[X�Y^J�[
+_O��]��\�Ә[YOH���]�]H��[�Y]L��Y�[�^�^X�����[O^�����Y�Έ�M��ؘJ�MJH�X^ZY���
+]��_B�ې�X��^�HO�K�����Y�][ۊ
+_O��]��\�Ә[YOH�MHMH�L��ܙ\�X��^\��[��L��[O^���ܙ\���܎���\�K[Z�X�ܙ\�H�_O��]��\�Ә[YOH��^][\�X�[�\��\�Y�KX�]�Y[�X�Lȏ����\�Ә[YOH��۝X��^[�]]�[N��ٛܛX]^Q�[
+�[X�Y^J_O�����]ۈې�X��^�
+HO��]�[X�Y^J�[
+_H�\�Ә[YOH�^[�]]�[M^L��NN�^][\�X�[�\��\�Y�KX�[�\�����؝]ۏ���]���]��\�Ә[YOH��^�\LK�H����QPS�P�˛X\
+X�O��ۜ���[�H�]^Q\�\��[X�Y^KX���^JK�[���ۜ�\�X�]�HH�[X�YYX[X�OOHX���^N          return (
                     <button key={tab.key} onClick={() => setSelectedMealTab(tab.key)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-semibold transition-col/rs"
                       style={{ background: isActive ? "var(--mk-terracotta)" : "rgba(212,160,23,0.1)", color: isActive ? "white" : "var(--mk-terracotta)" }}>
                       <span>{tab.icon}</span><span>{tab.label}</span>
                       {count > 0 && (
@@ -543,10 +548,10 @@ export default function WeekMenu({
                     {dishes.map(d => (
                       <div key={d.id} className="flex items-center gap-3 rounded-xl border px-3 py-2.5"
                         style={{ borderColor: "var(--mk-border)", background: "var(--mk-cream)" }}>
-                        <span className="text-lg flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : tab?.icon ?? "ð½ï¸"}</span>
+                        <span className="text-lg flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : tab?.icon ?? "🍽️"}</span>
                         <div className="flex-1 min-w-0">
                           {d.recipe_id ? (
-                            <Link href={`/recipes/${d.recipe_id}`} onClick={() => setSelectedDay(n5ll)}
+                            <Link href={`/recipes/${d.recipe_id}`} onClick={() => setSelectedDay(null)}
                               className="text-sm font-semibold truncate block underline-offset-2 hover:underline" style={{ color: "#1a1a1a" }}>
                               {d.recipes?.name ?? d.free_text ?? "Recipe"}
                             </Link>
@@ -558,7 +563,7 @@ export default function WeekMenu({
                           )}
                         </div>
                         <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-300 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
+                          className="text-neutral-300 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
                       </div>
                     ))}
                   </div>
@@ -570,7 +575,7 @@ export default function WeekMenu({
                 Add to {MEAL_TABS.find(t => t.key === selectedMealTab)?.label}
               </p>
               <input type="text" value={daySearch} onChange={e => setDaySearch(e.target.value)}
-                placeholder="Search recipesâ¦" className="w-full rounded-xl px-3 py-2.5 text-sm border outline-none mb-3"
+                placeholder="Search recipes…" className="w-full rounded-xl px-3 py-2.5 text-sm border outline-none mb-3"
                 style={{ borderColor: "var(--mk-border)", background: "white" }} />
               <div className="space-y-1.5">
                 {daySearchResults.map(r => {
@@ -585,7 +590,7 @@ export default function WeekMenu({
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize text-neutral-400">{r.cuisine_tags[0]}</p>}
                       </div>
                       <span className="text-xs font-bold flex-shrink-0" style={{ color: alreadyAdded ? "#bbb" : "var(--mk-terracotta)" }}>
-                        {alreadyAdded ? "â Added" : "+ Add"}
+                        {alreadyAdded ? "✓ Added" : "+ Add"}
                       </span>
                     </button>
                   );
@@ -596,7 +601,7 @@ export default function WeekMenu({
         </div>
       )}
 
-      {/* ââ Pick day for recipe from search ââ */}
+      {/* ── Pick day for recipe from search ── */}
       {pendingRecipe && (
         <div className="fixed inset-0 z-50 flex items-end" style={{ background: "rgba(0,0,0,0.5)" }}
           onClick={() => setPendingRecipe(null)}>
@@ -611,7 +616,7 @@ export default function WeekMenu({
             </div>
             <div className="flex gap-2 mb-4 flex-wrap">
               {MEAL_TABS.map(tab => (
-                <button key={tab.key} onClick={() => setPendingMealType(tab.key)}
+                <button key={tab.key} onClick={() => setPendingMealType(tab.key))}
                   className="text-xs px-3 py-1.5 rounded-full font-semibold transition-colors flex items-center gap-1"
                   style={{ background: pendingMealType === tab.key ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: pendingMealType === tab.key ? "white" : "var(--mk-terracotta)" }}>
                   <span>{tab.icon}</span> {tab.label}
@@ -622,63 +627,4 @@ export default function WeekMenu({
               {weekDays.map((iso, i) => {
                 const isToday = iso === todayStr;
                 const isPast = iso < todayStr;
-                return (
-                  <button key={iso} disabled={isPast}
-                    onClick={() => !isPast && addDish(iso, pendingMealType, pendingRecipe)}
-                    className="flex flex-col items-center py-2 px-1 rounded-xl transition-all active:scale-95 disabled:opacity-40"
-                    style={{ background: isToday ? "var(--mk-terracotta)" : isPast ? "rgba(0,0,0,0.04)" : "rgba(212,160,23,0.1)", color: isToday ? "white" : isPast ? "#bbb" : "var(--mk-terracotta)" }}>
-                    <span className="text-[10px] font-bold">{DAY_LABELS[i]}</span>
-                    <span className="text-base font-bold leading-tight">{new Date(iso + "T12:00:00").getDate()}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <button onClick={() => setPendingRecipe(null)} className="w-full py-2 text-sm text-neutral-400">Cancel</button>
- &        </div>
-        </div>
-      )}
-
-      {/* ââ Pick day for Recipe Genie free-text suggestion ââ */}
-      {pendingFreeText && (
-        <div className="fixed inset-0 z-50 flex items-end" style={{ background: "rgba(0,0,0,0.5)" }}
-          onClick={() => setPendingFreeText(null)}>
-          <div className="bg-white rounded-t-2xl p-5 w-full" style={{ boxShadow: "0 -4px 30px rgba(0,0,0,0.15)" }}
-            onClick={e => e.stopPropagation()}>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">â¦</span>
-              <div>
-                <p className="font-bold text-neutral-800 leading-snug">{pendingFreeText}</p>
-                <p className="text-xs text-neutral-400">Choose meal type then a day</p>
-              </div>
-            </div>
-            <div className="flex gap-2 mb-4 flex-wrap">
-              {MEAL_TABS.map(tab => (
-                <button key={tab.key} onClick={() => setPendingFreeTextMealType(tab.key)}
-                  className="text-xs px-3 py-1.5 rounded-full font-semibold transition-colors flex items-center gap-1"
-                  style={{ background: pendingFreeTextMealType === tab.key ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: pendingFreeTextMealType === tab.key ? "white" : "var(--mk-terracotta)" }}>
-                  <span>{tab.icon}</span> {tab.label}
-                </button>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-1.5 mb-5">
-              {weekDays.map((iso, i) => {
-                const isToday = iso === todayStr;
-                const isPast = iso < todayStr;
-                return (
-                  <button key={iso} disabled={isPast}
-                    onClick={() => !isPast && addFreeDish(iso, pendingFreeTextMealType, pendingFreeText)}
-                    className="flex flex-col items-center py-2 px-1 rounded-xl transition-all active:scale-95 disabled:opacity-40"
-                    style={{ background: isToday ? "var(--mk-terracotta)" : isPast ? "rgba(0,0,0,0.04)" : "rgba(212,160,23,0.1)", color: isToday ? "white" : isPast ? "#bbb" : "var(--mk-terracotta)" }}>
-                    <span className="text-[10px] font-bold">{DAY_LABELS[i]}</span>
-         &          <span className="text-base font-bold leading-tight">{new Date(iso + "T12:00:00").getDate()}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <button onClick={() => setPendingFreeText(null)} className="w-full py-2 text-sm text-neutral-400">Cancel</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+               "&WGW&����'WGF���W�׶�6��F�6&�VC׶�57GТ��6Ɩ6�ײ�����57BbbFDF�6���6��V�F��t�V�G�R�V�F��u&V6�R�Т6�74��S�&f�W�f�W��6���FV�2�6V�FW"��"��&�V�FVB׆�G&�6�F������7F�fS�66�RӓRF�6&�VC��6�G��C �7G��S׷�&6�w&�V�C��5F�F��'f"���ֲ�FW'&6�GF�"��57B�'&v&�����B�"�'&v&�#"�c�#2���"�6���#��5F�F��'v��FR"��57B�"6&&""�'f"���ֲ�FW'&6�GF�"����7�6�74��S�'FW�Bճ��f��B�&��B#�D���$T�5������7���7�6�74��S�'FW�B�&6Rf��B�&��B�VF��r�F�v�B#��WrFFR��6��%C#��"��vWDFFR�����7����'WGF������җТ��F�c��'WGF����6Ɩ6�ײ����6WEV�F��u&V6�R��V��6�74��S�'r�gV����"FW�B�6�FW�B��WWG&��C#�6�6V���'WGF�����F�c���F�c��Р���)H)H�6�F�f�"&V6�RvV�Rg&VR�FW�B7VvvW7F���)H)H��Т�V�F��tg&VUFW�Bbb���F�b6�74��S�&f��VB��6WB���Sf�W��FV�2�V�B"7G��S׷�&6�w&�V�C�'&v&�����R�"�Т��6Ɩ6�ײ����6WEV�F��tg&VUFW�B��V����F�b6�74��S�&&r�v��FR&�V�FVB�B�'���Rr�gV��"7G��S׷�&��6�F�s�#�G�3�&v&�����R�"�Т��6Ɩ6�׶R��R�7F�&�vF��ₗ���F�b6�74��S�&f�W��FV�2�6V�FW"v�2�"�B#��7�6�74��S�'FW�B�7��#�)�c��7���F�c��6�74��S�&f��B�&��BFW�B��WWG&�Ӄ�VF��r�6�Vr#�V�F��tg&VUFW�G�����6�74��S�'FW�Bׇ2FW�B��WWG&��C#�6���6R�V�G�RF�V�F������F�c���F�c��F�b6�74��S�&f�W�v�"�"�Bf�W��w&#���T��D%2���F"�����'WGF���W�׷F"�W����6Ɩ6�ײ����6WEV�F��tg&VUFW�D�V�G�R�F"�W��Т6�74��S�'FW�Bׇ2��2���R&�V�FVB�gV��f��B�6V֖&��BG&�6�F����6���'2f�W��FV�2�6V�FW"v� �7G��S׷�&6�w&�V�C�V�F��tg&VUFW�D�V�G�R���F"�W��'f"���ֲ�FW'&6�GF�"�'&v&�#"�c�#2��2�"�6���#�V�F��tg&VUFW�D�V�G�R���F"�W��'v��FR"�'f"���ֲ�FW'&6�GF�"����7��F"�6�����7���F"��&V�Т��'WGF�����Т��F�c��F�b6�74��S�&w&�Bw&�B�6��2�rv��R�"�R#��vVV�F�2�����6��������6��7B�5F�F���6����F�F�7G#��6��7B�57B��6��F�F�7G#��&WGW&����'WGF���W�׶�6��F�6&�VC׶�57GТ��6Ɩ6�ײ�����57BbbFDg&VTF�6���6��V�F��tg&VUFW�D�V�G�R�V�F��tg&VUFW�B�Т6�74��S�&f�W�f�W��6���FV�2�6V�FW"��"��&�V�FVB׆�G&�6�F������7F�fS�66�RӓRF�6&�VC��6�G��C �7G��S׷�&6�w&�V�C��5F�F��'f"���ֲ�FW'&6�GF�"��57B�'&v&�����B�"�'&v&�#"�c�#2���"�6���#��5F�F��'v��FR"��57B�"6&&""�'f"���ֲ�FW'&6�GF�"����7�6�74��S�'FW�Bճ��f��B�&��B#�D���$T�5������7���7�6�74��S�'FW�B�&6Rf��B�&��B�VF��r�F�v�B#��WrFFR��6��%C#��"��vWDFFR�����7����'WGF������җТ��F�c��'WGF����6Ɩ6�ײ����6WEV�F��tg&VUFW�B��V��6�74��S�'r�gV����"FW�B�6�FW�B��WWG&��C#�6�6V���'WGF�����F�c���F�c��Т��F�c����
