@@ -574,7 +574,7 @@ export default function WeekMenu({
       </div>
 
       {/* ── Day detail bottom sheet ── */}
-      {selectedDay && (
+     {selectedDay && (
         <div className="fixed inset-0 z-50 flex items-end" style={{ background: "rgba(0,0,0,0.5)" }}
           onClick={() => setSelectedDay(null)}>
           <div className="bg-white rounded-t-2xl w-full flex flex-col"
