@@ -23,7 +23,6 @@ export async function PATCH(
     "story",
     "source_url",
     "ingredients",
-    "meal_category",
     "cuisine_tags",
     "dietary_tags",
     "visibility",
