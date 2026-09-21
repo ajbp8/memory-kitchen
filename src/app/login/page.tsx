@@ -150,9 +150,9 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-xs text-neutral-400 mt-8">
-          Invite only network of good people.{" "}
-          <Link href="/join" className="underline">
-            Have an invite code?
+          New here?{" "}
+          <Link href="/signup" className="underline">
+            Create an account
           </Link>
         </p>
       </div>
