@@ -11,20 +11,67 @@ type NestorSuggestion = { name: string; description: string; cookTime?: string }
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const CUISINE_EMOJI: Record<string, string> = {
-  italian: "🍝", mexican: "🌮", indian: "🍛", chinese: "🥡", japanese: "🍣",
-  thai: "🍜", french: "🥐", mediterranean: "🥙", american: "🍔",
-  "middle-eastern": "🫙", dessert: "🍰", baking: "🍞",
+  // Primary categories
+  meat: "ð¥©", poultry: "ð", seafood: "ð", vegetarian: "ð¥¬", dessert: "ð°",
+  // Descriptive tags
+  pasta: "ð", rice: "ð", soup: "ð²", curry: "ð", salad: "ð¥",
+  // Legacy cuisine names (recipes added before redesign)
+  italian: "ð", mexican: "ð®", indian: "ð", chinese: "ð¥¡", japanese: "ð£",
+  thai: "ð", french: "ð¥", mediterranean: "ð¥", american: "ð",
+  "middle-eastern": "ð«", baking: "ð",
 };
 const MEAL_TABS = [
-  { key: "dinner",    label: "Dinner",    icon: "🍽️" },
-  { key: "sides",     label: "Sides",     icon: "🥗" },
-  { key: "lunch",     label: "Lunch",     icon: "☀️" },
-  { key: "breakfast", label: "Breakfast", icon: "🌅" },
+  { key: "dinner",    label: "Dinner",    icon: "ð½ï¸" },
+  { key: "sides",     label: "Sides",     icon: "ð¥" },
+  { key: "lunch",     label: "Lunch",     icon: "âï¸" },
+  { key: "breakfast", label: "Breakfast", icon: "ð" },
 ];
+
+// âââ Fixed primary category filter chips âââââââââââââââââââââââââââââââââââââ
+const CATEGORY_FILTERS = [
+  {
+    key: "meat", label: "Meat", emoji: "ð¥©",
+    keywords: ["meat","beef","pork","lamb","veal","steak","bacon","ham","sausage","mince","venison","chorizo","salami","pepperoni","brisket","mutton","meatball","meatballs"],
+  },
+  {
+    key: "poultry", label: "Poultry", emoji: "ð",
+    keywords: ["poultry","chicken","turkey","duck","goose","hen","quail"],
+  },
+  {
+    key: "seafood", label: "Fish & Seafood", emoji: "ð",
+    keywords: ["seafood","fish","salmon","tuna","cod","haddock","sardine","sardines","prawn","prawns","shrimp","crab","lobster","mussel","mussels","squid","clams","oyster","oysters","scallop","scallops","anchovy","anchovies","trout","halibut","tilapia","mackerel","herring","seabass"],
+  },
+  {
+    key: "vegetarian", label: "Vegetarian", emoji: "ð¥¬",
+    keywords: [], // matched by absence of all other primary categories
+  },
+  {
+    key: "dessert", label: "Desserts", emoji: "ð°",
+    keywords: ["dessert","cake","brownie","brownies","tart","cheesecake","pudding","mousse","crepe","crepes","donut","doughnut","muffin","muffins","cupcake","sorbet","gelato","tiramisu","macaron","meringue","trifle","flapjack","truffle","fudge","cookie","cookies","biscuit","biscuits","praline","pastry","pie","pavlova"],
+  },
+];
+
+// All non-vegetarian keywords (used for vegetarian matching)
+const ALL_NON_VEG_KW = CATEGORY_FILTERS.filter(c => c.key !== "vegetarian").flatMap(c => c.keywords);
+
+function matchesFilter(tags: string[] | null, filterKey: string): boolean {
+  const lowerTags = tags?.map(t => t.toLowerCase()) ?? [];
+  // Direct key match (new-style tags with primary as first element)
+  if (lowerTags.includes(filterKey)) return true;
+  const cat = CATEGORY_FILTERS.find(c => c.key === filterKey);
+  if (!cat) return false;
+  if (filterKey === "vegetarian") {
+    // Vegetarian = no meat/poultry/seafood/dessert keywords anywhere in tags
+    return lowerTags.length === 0 ? false : !lowerTags.some(t => ALL_NON_VEG_KW.includes(t));
+  }
+  // Keyword match (backward compat with old tags like ["chicken","italian","pasta"])
+  return cat.keywords.some(kw => lowerTags.includes(kw));
+}
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 function getEmoji(r: { cuisine_tags: string[] | null }) {
   const t = r.cuisine_tags?.[0]?.toLowerCase();
-  return (t && CUISINE_EMOJI[t]) || "🍽️";
+  return (t && CUISINE_EMOJI[t]) || "ð½ï¸";
 }
 function toISO(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -39,7 +86,7 @@ function getMonday(offsetWeeks: number): Date {
 }
 function formatDayHeader(iso: string, i: number) {
   const d = new Date(iso + "T12:00:00");
-  return `${DAY_LABELS[i]} · ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+  return `${DAY_LABELS[i]} Â· ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 function formatDayFull(iso: string) {
   const d = new Date(iso + "T12:00:00");
@@ -108,15 +155,6 @@ export default function WeekMenu({
     d.setDate(d.getDate() + i);
     return toISO(d);
   });
-
-  const cuisineOptions = useMemo(() => {
-    const counts: Record<string, number> = {};
-    recipes.forEach(r => r.cuisine_tags?.forEach(t => {
-      const key = t.toLowerCase();
-      counts[key] = (counts[key] ?? 0) + 1;
-    }));
-    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([tag]) => tag);
-  }, [recipes]);
 
   const fetchWeek = useCallback(async () => {
     setLoading(true);
@@ -204,10 +242,10 @@ export default function WeekMenu({
     const q = search.trim().toLowerCase();
     return recipes.filter(r => {
       const matchText = q ? r.name.toLowerCase().includes(q) : true;
-      const matchCuisine = activeFilters.length > 0
-        ? activeFilters.some(f => r.cuisine_tags?.map(t => t.toLowerCase()).includes(f))
+      const matchCat  = activeFilters.length > 0
+        ? activeFilters.some(f => matchesFilter(r.cuisine_tags, f))
         : true;
-      return matchText && matchCuisine;
+      return matchText && matchCat;
     }).slice(0, 30);
   }, [searchOpen, search, activeFilters, recipes]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -233,7 +271,7 @@ export default function WeekMenu({
   return (
     <div className="min-h-screen pb-20" style={{ background: "var(--mk-cream)" }}>
 
-      {/* ── Banner ── */}
+      {/* ââ Banner ââ */}
       <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }} className="px-5 pt-10 pb-4">
         <div className="flex items-center gap-2.5 mb-0.5">
           <AppLogo />
@@ -242,7 +280,7 @@ export default function WeekMenu({
             <span style={{ color: "#FFE580" }}> Kitchen</span>
           </span>
         </div>
-        <p className="text-xs font-medium mb-4 pl-9" style={{ color: "rgba(255,255,255,0.6)" }}>Maman, what&apos;s for dinner? 😊</p>
+        <p className="text-xs font-medium mb-4 pl-9" style={{ color: "rgba(255,255,255,0.6)" }}>Maman, what&apos;s for dinner? ð</p>
 
         <div ref={searchContainerRef} className="relative">
           <input
@@ -251,52 +289,51 @@ export default function WeekMenu({
             value={search}
             onChange={e => setSearch(e.target.value)}
             onFocus={() => setSearchOpen(true)}
-            placeholder="Search recipes to add to your week…"
+            placeholder="Search recipes to add to your weekâ¦"
             className="w-full rounded-xl px-4 py-2.5 text-sm outline-none pr-10"
             style={{ background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.35)", color: "white" }}
           />
           {(search || activeFilters.length > 0) && (
             <button onClick={() => { setSearch(""); setActiveFilters([]); }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-sm" aria-label="Clear">✕</button>
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-sm" aria-label="Clear">â</button>
           )}
           {isSearchActive && (
             <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl overflow-hidden z-30"
               style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.18)" }}>
-              {cuisineOptions.length > 0 && (
-                <div className="px-3 pt-3 pb-2 border-b flex gap-2 overflow-x-auto"
-                  style={{ borderColor: "var(--mk-border)", scrollbarWidth: "none" }}>
-                  <button onClick={() => setActiveFilters([])}
-                    className="flex-shrink-0 text-[11px] font-bold px-3 py-1 rounded-full"
-                    style={{ background: activeFilters.length === 0 ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: activeFilters.length === 0 ? "white" : "var(--mk-terracotta)" }}
-                  >All</button>
-                  {cuisineOptions.map(tag => {
-                    const active = activeFilters.includes(tag);
-                    return (
-                      <button key={tag} onClick={() => toggleFilter(tag)}
-                        className="flex-shrink-0 text-[11px] font-bold px-3 py-1 rounded-full capitalize"
-                        style={{ background: active ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: active ? "white" : "var(--mk-terracotta)" }}
-                      >{CUISINE_EMOJI[tag] ?? "🍽️"} {tag}</button>
-                    );
-                  })}
-                </div>
-              )}
+              {/* Fixed category filter chips */}
+              <div className="px-3 pt-3 pb-2 border-b flex gap-2 overflow-x-auto"
+                style={{ borderColor: "var(--mk-border)", scrollbarWidth: "none" }}>
+                <button onClick={() => setActiveFilters([])}
+                  className="flex-shrink-0 text-[11px] font-bold px-3 py-1 rounded-full"
+                  style={{ background: activeFilters.length === 0 ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: activeFilters.length === 0 ? "white" : "var(--mk-terracotta)" }}
+                >All</button>
+                {CATEGORY_FILTERS.map(cat => {
+                  const active = activeFilters.includes(cat.key);
+                  return (
+                    <button key={cat.key} onClick={() => toggleFilter(cat.key)}
+                      className="flex-shrink-0 text-[11px] font-bold px-3 py-1 rounded-full"
+                      style={{ background: active ? "var(--mk-terracotta)" : "rgba(212,160,23,0.13)", color: active ? "white" : "var(--mk-terracotta)" }}
+                    >{cat.emoji} {cat.label}</button>
+                  );
+                })}
+              </div>
               {!search.trim() && activeFilters.length === 0 && (
                 <p className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#bbb" }}>
-                  Browse all · {recipes.length} recipes
+                  Browse all Â· {recipes.length} recipes
                 </p>
               )}
               {(search.trim() || activeFilters.length > 0) && (() => {
                 const totalMatches = recipes.filter(r => {
                   const q = search.trim().toLowerCase();
                   const matchText = q ? r.name.toLowerCase().includes(q) : true;
-                  const matchCuisine = activeFilters.length > 0
-                    ? activeFilters.some(f => r.cuisine_tags?.map(t => t.toLowerCase()).includes(f))
+                  const matchCat  = activeFilters.length > 0
+                    ? activeFilters.some(f => matchesFilter(r.cuisine_tags, f))
                     : true;
-                  return matchText && matchCuisine;
+                  return matchText && matchCat;
                 }).length;
                 return (
                   <p className="px-3 pt-2 pb-1 text-[10px]" style={{ color: "#bbb" }}>
-                    {searchResults.length} of {totalMatches}{search.trim() ? ` matching "${search.trim()}"` : ""}{totalMatches > searchResults.length ? " — type to narrow" : ""}
+                    {searchResults.length} of {totalMatches}{search.trim() ? ` matching "${search.trim()}"` : ""}{totalMatches > searchResults.length ? " â type to narrow" : ""}
                   </p>
                 );
               })()}
@@ -326,19 +363,19 @@ export default function WeekMenu({
         </div>
       </div>
 
-      {/* ── Week nav ── */}
+      {/* ââ Week nav ââ */}
       <div className="bg-white border-b px-5 py-3 flex items-center justify-between" style={{ borderColor: "var(--mk-border)" }}>
         <button onClick={() => setWeekOffset(o => Math.max(-2, o - 1))} disabled={weekOffset <= -2}
-          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>← prev</button>
+          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>â prev</button>
         <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">
           {weekOffset === 0 ? "This week" : weekOffset === -1 ? "Last week" : weekOffset === 1 ? "Next week"
             : weekOffset < 0 ? `${Math.abs(weekOffset)}w ago` : `In ${weekOffset}w`}
         </span>
         <button onClick={() => setWeekOffset(o => Math.min(2, o + 1))} disabled={weekOffset >= 2}
-          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>next →</button>
+          className="text-xs font-semibold disabled:opacity-25" style={{ color: "var(--mk-terracotta)" }}>next â</button>
       </div>
 
-      {/* ── Day cards ── */}
+      {/* ââ Day cards ââ */}
       <div className="px-4 pt-3 pb-4 space-y-2">
         {loading ? (
           Array.from({ length: 7 }, (_, i) => (
@@ -402,7 +439,7 @@ export default function WeekMenu({
                   <div className="space-y-1">
                     {dinnerDishes.map(d => (
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">🍽️</span>
+                        <span className="text-[11px] flex-shrink-0">ð½ï¸</span>
                         {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`}
                             className="text-sm font-semibold truncate flex-1 underline-offset-2 hover:underline"
@@ -413,13 +450,13 @@ export default function WeekMenu({
                           <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Dish"}</span>
                         )}
                         <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
+                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
                       </div>
                     ))}
                     {sidesDishes.map(d => (
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">🥗</span>
-                        {d.recipe_id ? (
+                        <span className="text-[11px] flex-shrink-0">ð¥</span>
+                       {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
                             {d.recipes?.name ?? d.free_text ?? "Side"}
                           </Link>
@@ -427,12 +464,12 @@ export default function WeekMenu({
                           <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Side"}</span>
                         )}
                         <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
+                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
                       </div>
                     ))}
                     {lunchDishes.map(d => (
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">☀️</span>
+                        <span className="text-[11px] flex-shrink-0">âï¸</span>
                         {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
                             {d.recipes?.name ?? d.free_text ?? "Lunch"}
@@ -441,12 +478,12 @@ export default function WeekMenu({
                           <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Lunch"}</span>
                         )}
                         <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
+                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
                       </div>
                     ))}
                     {bfDishes.map(d => (
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">🌅</span>
+                        <span className="text-[11px] flex-shrink-0">ð</span>
                         {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
                             {d.recipes?.name ?? d.free_text ?? "Breakfast"}
@@ -455,7 +492,7 @@ export default function WeekMenu({
                           <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Breakfast"}</span>
                         )}
                         <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
+                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
                       </div>
                     ))}
                     {isDragTarget && (
@@ -468,91 +505,22 @@ export default function WeekMenu({
           );
         })}
 
-        {/* ── Recipe Genie ── */}
+        {/* ââ Recipe Genie ââ */}
         {!loading && (
           <div className="mt-6">
             <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
               {/* Header strip */}
               <div className="px-4 py-3 flex items-center gap-2.5"
                 style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}>
-                <span style={{ fontSize: "22px", color: "#FFE580", lineHeight: 1 }}>✦</span>
+                <span style={{ fontSize: "22px", color: "#FFE580", lineHeight: 1 }}>â¦</span>
                 <div>
                   <p style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1, color: "white" }}>Recipe Genie</p>
                   <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
                     e.g. &quot;sardines and pasta&quot; or &quot;quick chicken dinner&quot;
-                  </p>
-                </div>
-              </div>
-              {/* Input area */}
-              <div className="px-4 py-3" style={{ background: "#F0F7F2" }}>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={nestorPrompt}
-                    onChange={e => setNestorPrompt(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && askNestor()}
-                    placeholder="What's in your kitchen?"
-                    className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none"
-                    style={{ background: "white", border: "1px solid rgba(27,94,46,0.25)", color: "#1a1a1a" }}
-                  />
-                  <button
-                    onClick={askNestor}
-                    disabled={nestorLoading || !nestorPrompt.trim()}
-                    className="px-4 py-2.5 rounded-xl text-sm font-bold transition-opacity disabled:opacity-40 flex-shrink-0"
-                    style={{ background: "var(--mk-terracotta)", color: "white" }}
-                  >
-                    {nestorLoading ? "…" : "GO →"}
-                  </button>
-                </div>
-                {nestorLoading && (
-                  <p className="text-xs mt-2 animate-pulse" style={{ color: "#1B5E2E" }}>Recipe Genie is thinking…</p>
-                )}
-                {nestorError && (
-                  <p className="text-xs mt-2" style={{ color: "var(--mk-terracotta)" }}>{nestorError}</p>
-                )}
-                {nestorResults.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    {nestorResults.map((r, i) => (
-                      <div key={i} className="rounded-xl px-3 py-3"
-                        style={{ background: "white", border: "1px solid rgba(27,94,46,0.18)" }}>
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <p className="text-sm font-bold leading-snug" style={{ color: "#1a1a1a" }}>{r.name}</p>
-                          {r.cookTime && <span className="text-[10px] text-neutral-400 flex-shrink-0 mt-0.5">{r.cookTime}</span>}
-                        </div>
-                        <p className="text-xs text-neutral-500 leading-relaxed mb-2.5">{r.description}</p>
-                        <button
-                          onClick={() => { setPendingFreeText(r.name); setPendingFreeTextMealType("dinner"); }}
-                          className="text-xs font-bold px-3 py-1.5 rounded-lg"
-                          style={{ background: "var(--mk-terracotta)", color: "white" }}
-                        >+ Plan it</button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-        <div className="h-4" />
-      </div>
-
-      {/* ── Day detail bottom sheet ── */}
-      {selectedDay && (
-        <div className="fixed inset-0 z-50 flex items-end" style={{ background: "rgba(0,0,0,0.5)" }}
-          onClick={() => setSelectedDay(null)}>
-          <div className="bg-white rounded-t-2xl w-full flex flex-col"
-            style={{ boxShadow: "0 -4px 30px rgba(0,0,0,0.15)", maxHeight: "85vh" }}
-            onClick={e => e.stopPropagation()}>
-            <div className="px-5 pt-5 pb-3 border-b flex-shrink-0" style={{ borderColor: "var(--mk-border)" }}>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="font-bold text-neutral-800">{formatDayFull(selectedDay)}</h2>
-                <button onClick={() => setSelectedDay(null)} className="text-neutral-400 text-2xl w-8 h-8 flex items-center justify-center">×</button>
-              </div>
-              <div className="flex gap-1.5">
-                {MEAL_TABS.map(tab => {
-                  const count = getDayDishes(selectedDay, tab.key).length;
-                  const isActive = selectedMealTab === tab.key;
-                  return (
+               Â÷à¢ÂöFcà¢ÂöFcà¢²ò¢çWB&V¢÷Ð¢ÆFb6Æ74æÖSÒ'ÓBÓ2"7GÆS×·²&6¶w&÷VæC¢"4cctc""×Óà¢ÆFb6Æ74æÖSÒ&fÆWvÓ"#à¢ÆùÁÕÐ(ÑåÁôÑáÐ(Ù±Õõí¹ÍÑ½ÉAÉ½µÁÑô(½¹
+¡¹õíôøÍÑ9ÍÑ½ÉAÉ½µÁÐ¡¹ÑÉÐ¹Ù±Õ¥ô(½¹-å½Ý¸õíôø¹­äôôô¹ÑÈÍ­9ÍÑ½È ¥ô(Á±¡½±Èô]¡ÐÌ¥¸å½ÕÈ­¥Ñ¡¸ü(±ÍÍ9µô±à´ÄÉ½Õ¹µá°Áà´ÌÁä´È¸ÔÑáÐµÍ´½ÕÑ±¥¹µ¹½¹(ÍÑå±õíì­É½Õ¹èÝ¡¥Ñ°½ÉÈèÅÁàÍ½±¥É ÈÜ°äÐ°ÐØ°À¸ÈÔ¤°½±½ÈèÅÅÅõô(¼ø(ñÕÑÑ½¸(½¹
+±¥¬õíÍ­9ÍÑ½Éô(¥Í±õí¹ÍÑ½É1½¥¹ñð¹ÍÑ½ÉAÉ½µÁÐ¹ÑÉ¥´ ¥ô(±ÍÍ9µôÁà´ÐÁä´È¸ÔÉ½Õ¹µá°ÑáÐµÍ´½¹Ðµ½±ÑÉ¹Í¥Ñ¥½¸µ½Á¥Ñä¥Í±é½Á¥Ñä´ÐÀ±àµÍ¡É¥¹¬´À(ÍÑå±õíì­É½Õ¹èÙÈ ´µµ¬µÑÉÉ½ÑÑ¤°½±½ÈèÝ¡¥Ñõô(ø(í¹ÍÑ½É1½¥¹üè<Hô(ð½ÕÑÑ½¸ø(ð½¥Øø(í¹ÍÑ½É1½¥¹ (ñÀ±ÍÍ9µôÑáÐµáÌµÐ´È¹¥µÑµÁÕ±ÍÍÑå±õíì½±½ÈèÅÕÉõôùI¥Á¹¥¥ÌÑ¡¥¹­¥¹ð½Àø( ¥ô(í¹ÍÑ½ÉÉÉ½È (ñÀ±ÍÍ9µôÑáÐµáÌµÐ´ÈÍÑå±õíì½±½ÈèÙÈ ´µµ¬µÑÉÉ½ÑÑ¤õôùí¹ÍÑ½ÉÉÉ½Éôð½Àø(¥ô(í¹ÍÑ½ÉIÍÕ±ÑÌ¹±¹Ñ øÀ ( ñ¥Ø±ÍÍ9µôµÐ´ÌÍÁµä´Èø(í¹ÍÑ½ÉIÍÕ±ÑÌ¹µÀ ¡È°¤¤ôø (ñ¥Ø­äõí¥ô±ÍÍ9µôÉ½Õ¹µá°Áà´ÌÁä´Ì(ÍÑå±õíì­É½Õ¹èÝ¡¥Ñ°½ÉÈèÅÁàÍ½±¥É ÈÜ°äÐ°ÐØ°À¸Äà¤õôø(ñ¥Ø±ÍÍ9µô±à¥ÑµÌµÍÑÉÐ©ÕÍÑ¥äµÑÝ¸À´Èµ´Äø(ñÀ±ÍÍ9µôÑáÐµÍ´½¹Ðµ½±±¥¹µÍ¹ÕÍÑå±õíì½±½ÈèÅÅÅõôùíÈ¹¹µôð½Àø(íÈ¹½½­Q¥µñÍÁ¸±ÍÍ9µôÑáÐµlÄÁÁátÑáÐµ¹ÕÑÉ°´ÐÀÀ±àµÍ¡É¥¹¬´ÀµÐ´À¸ÔùíÈ¹½½­Q¥µôð½ÍÁ¸ùô(ð½¥Øø(ñÀ±ÍÍ9µôÑáÐµáÌÑáÐµ¹ÕÑÉ°´ÔÀÀ±¥¹µÉ±áµ´È¸ÔùíÈ¹ÍÉ¥ÁÑ¥½¹ôð½Àø(ñÕÑÑ½¸(½¹
+±¥¬õì ¤ôøìÍÑA¹¥¹ÉQáÐ¡È¹¹µ¤ìÍÑA¹¥¹ÉQáÑ5±QåÁ ¥¹¹È¤ìõô(±ÍÍ9µôÑáÐµáÌ½¹Ðµ½±Áà´ÌÁä´Ä¸ÔÉ½Õ¹µ±(ÍÑå±õíì­É½Õ¹èÙÈ ´µµ¬µÑÉÉ½ÑÑ¤°½±½ÈèÝ¡¥Ñõô(ø¬A±¸¥Ðð½ÕÑÑ½¸ø(ð½¥Øø( ¤¥ô(ð½¥Øø(¥ô(ð½¥Øø(ð½¥Øø(ð½¥Øø(¥ô(ñ¥Ø±ÍÍ9µô ´Ð¼ø(ð½¥Øø((ì¼¨RR äÑ¥°½ÑÑ½´Í¡ÐRR ¨½ô(·6VÆV7FVDFbb¢ÆFb6Æ74æÖSÒ&fVBç6WBÓ¢ÓSfÆWFV×2ÖVæB"7GÆS×·²&6¶w&÷VæC¢'&v&ÃÃÃãR"×Ð¢öä6Æ6³×²Óâ6WE6VÆV7FVDFçVÆÂÓà¢ÆFb6Æ74æÖSÒ&&r×vFR&÷VæFVB×BÓ'ÂrÖgVÆÂfÆWfÆWÖ6öÂ ¢7GÆS×·²&÷6F÷s¢#ÓG3&v&ÃÃÃãR"ÂÖVvC¢#Wf"×Ð¢öä6Æ6³×¶RÓâRç7F÷&÷vFöâÓà¢ÆFb6Æ74æÖSÒ'ÓRBÓR"Ó2&÷&FW"Ö"fÆW×6&æ²Ó"7GÆS×·²&÷&FW$6öÆ÷#¢'f"ÒÖÖ²Ö&÷&FW""×Óà¢ÆFb6Æ74æÖSÒ&fÆWFV×2Ö6VçFW"§W7FgÖ&WGvVVâÖ"Ó2#à¢Æ"6Æ74æÖSÒ&föçBÖ&öÆBFWBÖæWWG&ÂÓ#ç¶f÷&ÖDFgVÆÂ6VÆV7FVDFÓÂö#à¢Æ'WGFöâöä6Æ6³×²Óâ6WE6VÆV7FVDFçVÆÂÒ6Æ74æÖSÒ'FWBÖæWWG&ÂÓCFWBÓ'ÂrÓÓfÆWFV×2Ö6VçFW"§W7FgÖ6VçFW"#ì9sÂö'WGFöãà¢ÂöFcà¢ÆFb6Æ74æÖSÒ&fÆWvÓãR#à¢´ÔTÅõD%2æÖF"Óâ°¢6öç7B6÷VçBÒvWDFF6W26VÆV7FVDFÂF"æ¶WæÆVæwF°¢6öç7B47FfRÒ6VÆV7FVDÖVÅF"ÓÓÒF"æ¶W°¢          return (
                     <button key={tab.key} onClick={() => setSelectedMealTab(tab.key)}
                       className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-semibold transition-colors"
                       style={{ background: isActive ? "var(--mk-terracotta)" : "rgba(212,160,23,0.1)", color: isActive ? "white" : "var(--mk-terracotta)" }}>
@@ -575,10 +543,10 @@ export default function WeekMenu({
                     {dishes.map(d => (
                       <div key={d.id} className="flex items-center gap-3 rounded-xl border px-3 py-2.5"
                         style={{ borderColor: "var(--mk-border)", background: "var(--mk-cream)" }}>
-                        <span className="text-lg flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : tab?.icon ?? "🍽️"}</span>
+                        <span className="text-lg flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : tab?.icon ?? "ð½ï¸"}</span>
                         <div className="flex-1 min-w-0">
                           {d.recipe_id ? (
-                            <Link href={`/recipes/${d.recipe_id}`} onClick={() => setSelectedDay(null)}
+                            <Link href={`/recipes/${d.recipe_id}`} onClick={() => setSelectedDay(n5ll)}
                               className="text-sm font-semibold truncate block underline-offset-2 hover:underline" style={{ color: "#1a1a1a" }}>
                               {d.recipes?.name ?? d.free_text ?? "Recipe"}
                             </Link>
@@ -590,7 +558,7 @@ export default function WeekMenu({
                           )}
                         </div>
                         <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-300 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
+                          className="text-neutral-300 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">Ã</button>
                       </div>
                     ))}
                   </div>
@@ -602,7 +570,7 @@ export default function WeekMenu({
                 Add to {MEAL_TABS.find(t => t.key === selectedMealTab)?.label}
               </p>
               <input type="text" value={daySearch} onChange={e => setDaySearch(e.target.value)}
-                placeholder="Search recipes…" className="w-full rounded-xl px-3 py-2.5 text-sm border outline-none mb-3"
+                placeholder="Search recipesâ¦" className="w-full rounded-xl px-3 py-2.5 text-sm border outline-none mb-3"
                 style={{ borderColor: "var(--mk-border)", background: "white" }} />
               <div className="space-y-1.5">
                 {daySearchResults.map(r => {
@@ -617,7 +585,7 @@ export default function WeekMenu({
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize text-neutral-400">{r.cuisine_tags[0]}</p>}
                       </div>
                       <span className="text-xs font-bold flex-shrink-0" style={{ color: alreadyAdded ? "#bbb" : "var(--mk-terracotta)" }}>
-                        {alreadyAdded ? "✓ Added" : "+ Add"}
+                        {alreadyAdded ? "â Added" : "+ Add"}
                       </span>
                     </button>
                   );
@@ -628,7 +596,7 @@ export default function WeekMenu({
         </div>
       )}
 
-      {/* ── Pick day for recipe from search ── */}
+      {/* ââ Pick day for recipe from search ââ */}
       {pendingRecipe && (
         <div className="fixed inset-0 z-50 flex items-end" style={{ background: "rgba(0,0,0,0.5)" }}
           onClick={() => setPendingRecipe(null)}>
@@ -666,18 +634,18 @@ export default function WeekMenu({
               })}
             </div>
             <button onClick={() => setPendingRecipe(null)} className="w-full py-2 text-sm text-neutral-400">Cancel</button>
-          </div>
+ &        </div>
         </div>
       )}
 
-      {/* ── Pick day for Recipe Genie free-text suggestion ── */}
+      {/* ââ Pick day for Recipe Genie free-text suggestion ââ */}
       {pendingFreeText && (
         <div className="fixed inset-0 z-50 flex items-end" style={{ background: "rgba(0,0,0,0.5)" }}
           onClick={() => setPendingFreeText(null)}>
           <div className="bg-white rounded-t-2xl p-5 w-full" style={{ boxShadow: "0 -4px 30px rgba(0,0,0,0.15)" }}
             onClick={e => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">✦</span>
+              <span className="text-3xl">â¦</span>
               <div>
                 <p className="font-bold text-neutral-800 leading-snug">{pendingFreeText}</p>
                 <p className="text-xs text-neutral-400">Choose meal type then a day</p>
@@ -702,7 +670,7 @@ export default function WeekMenu({
                     className="flex flex-col items-center py-2 px-1 rounded-xl transition-all active:scale-95 disabled:opacity-40"
                     style={{ background: isToday ? "var(--mk-terracotta)" : isPast ? "rgba(0,0,0,0.04)" : "rgba(212,160,23,0.1)", color: isToday ? "white" : isPast ? "#bbb" : "var(--mk-terracotta)" }}>
                     <span className="text-[10px] font-bold">{DAY_LABELS[i]}</span>
-                    <span className="text-base font-bold leading-tight">{new Date(iso + "T12:00:00").getDate()}</span>
+         &          <span className="text-base font-bold leading-tight">{new Date(iso + "T12:00:00").getDate()}</span>
                   </button>
                 );
               })}
