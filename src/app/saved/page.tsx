@@ -18,7 +18,7 @@ export default async function SavedPage() {
   const { data: saved } = await supabase
     .from("saved_recipes")
     .select(
-      "saved_at, recipes(id, name, meal_category, cuisine_tags, save_count, owner_id, users!recipes_owner_id_fkey(name))"
+      "saved_at, recipes(id, name, cuisine_tags, save_count, owner_id, users!recipes_owner_id_fkey(name))"
     )
     .eq("user_id", user.id)
     .order("saved_at", { ascending: false });
