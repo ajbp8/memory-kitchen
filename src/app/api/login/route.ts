@@ -29,7 +29,7 @@ export async function POST(request: Request) {
                       );
       }
         return NextResponse.json(
-          { error: "We couldn't find an account for that email. You'll need an invite to join." },
+          { error: "No account found for that email. New here? Create an account at /signup." },
           { status: 400 }
               );
   }
