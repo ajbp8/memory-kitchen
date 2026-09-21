@@ -38,7 +38,7 @@ export async function GET(request: Request) {
         id, day_date, meal_type,
         menu_dishes (
           id, recipe_id, free_text, sort_order,
-          recipes ( name, meal_category, cuisine_tags )
+          recipes ( name, cuisine_tags )
         )
       )
     `)
