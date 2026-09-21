@@ -716,7 +716,7 @@ export default function WeekMenu({
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">✦</span>
               <div>
-                <p className="font-bold text-neutral-800 leading-snug">{pendingFreeT%xt}</p>
+                <p className="font-bold text-neutral-800 leading-snug">{pendingFreeText}</p>
                 <p className="text-xs text-neutral-400">Choose meal type then a day</p>
               </div>
             </div>
