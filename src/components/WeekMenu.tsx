@@ -71,7 +71,13 @@ function matchesFilter(tags: string[] | null, filterKey: string): boolean {
 
 function getEmoji(r: { cuisine_tags: string[] | null }) {
   const t = r.cuisine_tags?.[0]?.toLowerCase();
-  return (t && CUISINE_EMOJI[t]) || "🍽️";
+  if (t && CUISINE_EMOJI[t]) return CUISINE_EMOJI[t];
+  // Fallback: use category filter matching so old keyword-tagged recipes
+  // (e.g. ["chicken","rice"]) show the same icon as the filter chip above
+  for (const cat of CATEGORY_FILTERS) {
+    if (matchesFilter(r.cuisine_tags, cat.key)) return cat.emoji;
+  }
+  return "🍽️";
 }
 function toISO(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
