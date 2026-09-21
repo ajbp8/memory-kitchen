@@ -24,7 +24,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
   const [recipeResult, savedResult] = await Promise.all([
     supabase
       .from("recipes")
-      .select("id, name, story, ingredients, source_url, meal_category, cuisine_tags, save_count, owner_id")
+      .select("id, name, story, ingredients, source_url, cuisine_tags, save_count, owner_id")
       .eq("id", id)
       .maybeSingle(),
     supabase
@@ -60,11 +60,6 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           <span className="text-4xl">{emoji}</span>
           <div className="flex-1 min-w-0">
             <h1 className="text-xl font-bold text-white leading-tight">{recipe.name}</h1>
-            {recipe.meal_category && (
-              <p className="text-xs mt-1 capitalize" style={{ color: "rgba(255,255,255,0.6)" }}>
-                {recipe.meal_category}
-              </p>
-            )}
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {recipe.owner_id === user.id && (
