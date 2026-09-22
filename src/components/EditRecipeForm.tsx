@@ -156,7 +156,7 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
           <button
             type="button"
             onClick={() => setDeleting("confirm")}
-            className="w-full text-xs text-red-400 py-2 hover:text-red-600 transition-colors"
+            className="w-full text-sm font-bold text-red-400 py-2 hover:text-red-600 transition-colors"
           >
             Delete this recipe
           </button>
