@@ -29,6 +29,7 @@ const CUISINE_EMOJI: Record<string, string> = {
 };
 const MEAL_TABS = [
   { key: "dinner",    label: "Dinner",    icon: "🍽️" },
+  { key: "sides",     label: "Sides",     icon: "🥗" },
   { key: "lunch",     label: "Lunch",     icon: "☀️" },
   { key: "breakfast", label: "Breakfast", icon: "🌅" },
 ];
