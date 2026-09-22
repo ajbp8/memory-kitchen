@@ -26,7 +26,6 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
   const [ingredients, setIngredients] = useState(ingredientsToText(recipe.ingredients));
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [deleting, setDeleting] = useState<"idle" | "confirm" | "working">("idle");
-  const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
