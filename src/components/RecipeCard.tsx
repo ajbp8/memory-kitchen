@@ -22,34 +22,29 @@ const CUISINE_STYLES: Record<string, { emoji: string; bg: string }> = {
   breakfast:   { emoji: "🍳", bg: "#c8a040" },
   snack:       { emoji: "🥨", bg: "#a8823a" },
   sauce:       { emoji: "🫙", bg: "#7a6a3a" },
-  // Cuisine/style tags
+  // Cuisine / style tags
   italian:     { emoji: "🍝", bg: "#c8602a" },
-  pasta: { emoji: "🍝", bg: "#c8602a" },
-  mexican: { emoji: "🌮", bg: "#b8482e" },
-  indian: { emoji: "🍛", bg: "#a8512a" },
-  chinese: { emoji: "🥡", bg: "#b8362e" },
-  japanese: { emoji: "🍣", bg: "#4a6b5a" },
-  thai: { emoji: "🍜", bg: "#4a7a4a" },
-  french: { emoji: "🥐", bg: "#5a5a8a" },
+  pasta:       { emoji: "🍝", bg: "#c8602a" },
+  mexican:     { emoji: "🌮", bg: "#b8482e" },
+  indian:      { emoji: "🍛", bg: "#a8512a" },
+  chinese:     { emoji: "🥡", bg: "#b8362e" },
+  japanese:    { emoji: "🍣", bg: "#4a6b5a" },
+  thai:        { emoji: "🍜", bg: "#4a7a4a" },
+  french:      { emoji: "🥐", bg: "#5a5a8a" },
   mediterranean: { emoji: "🥙", bg: "#3a7a7a" },
-  american: { emoji: "🍔", bg: "#c8602a" },
-  asian: { emoji: "🍜", bg: "#4a7a6a" },
-  chicken: { emoji: "🍗", bg: "#c8802a" },
-  fish: { emoji: "🐟", bg: "#3a7a9a" },
-  salmon: { emoji: "🐟", bg: "#3a7a9a" },
-  beef: { emoji: "🥩", bg: "#8a3a2a" },
-  pork: { emoji: "🥩", bg: "#9a4a3a" },
-  vegetarian: { emoji: "🥗", bg: "#3a8a4a" },
-  vegan: { emoji: "🌱", bg: "#4a9a4a" },
-  soup: { emoji: "🍲", bg: "#8a6a2a" },
-  salad: { emoji: "🥗", bg: "#4a8a5a" },
-  dessert: { emoji: "🍰", bg: "#b85a8a" },
-  cake: { emoji: "🎂", bg: "#c85a8a" },
-  baking: { emoji: "🍞", bg: "#c89050" },
-  bread: { emoji: "🍞", bg: "#c89050" },
-  rice: { emoji: "🍚", bg: "#7a8a4a" },
-  egg: { emoji: "🍳", bg: "#c8a040" },
-  eggs: { emoji: "🍳", bg: "#c8a040" },
+  american:    { emoji: "🍔", bg: "#c8602a" },
+  asian:       { emoji: "🍜", bg: "#4a7a6a" },
+  beef:        { emoji: "🥩", bg: "#8a3a2a" },
+  pork:        { emoji: "🥩", bg: "#9a4a3a" },
+  chicken:     { emoji: "🍗", bg: "#c8802a" },
+  fish:        { emoji: "🐟", bg: "#3a7a9a" },
+  salmon:      { emoji: "🐟", bg: "#3a7a9a" },
+  soup:        { emoji: "🍲", bg: "#8a6a2a" },
+  salad:       { emoji: "🥗", bg: "#4a8a5a" },
+  rice:        { emoji: "🍚", bg: "#7a8a4a" },
+  curry:       { emoji: "🍛", bg: "#a8512a" },
+  egg:         { emoji: "🍳", bg: "#c8a040" },
+  eggs:        { emoji: "🍳", bg: "#c8a040" },
 };
 
 function styleFor(cuisineTags: string[] | null | undefined) {
@@ -83,15 +78,10 @@ export default function RecipeCard({
       className="flex items-center gap-3 py-2.5 border-b"
       style={{ borderColor: "var(--mk-border)" }}
     >
-      {/* Cuisine chip */}
-      <div
-        className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
-        style={{ background: bg }}
-      >
+      <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+        style={{ background: bg }}>
         {emoji}
       </div>
-
-      {/* Name + original + owner */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold truncate" style={{ color: "#1a1a1a" }}>
           {recipe.name}
@@ -105,26 +95,12 @@ export default function RecipeCard({
           <p className="text-[10px] text-neutral-400 truncate">by {owner}</p>
         )}
       </div>
-
-      {/* Mutual friends badge */}
       {mutualFriends !== undefined && mutualFriends > 0 && (
-        <span className="text-[10px] text-neutral-400 flex-shrink-0">
-          👥 {mutualFriends}
-        </span>
+        <span className="text-[10px] text-neutral-400 flex-shrink-0">👥 {mutualFriends}</span>
       )}
-
-      {/* Save count */}
-      <span className="text-[10px] text-neutral-400 flex-shrink-0">
-        ♥ {recipe.save_count ?? 0}
-      </span>
-
-      {/* Chevron */}
-      <svg
-        width="12" height="12" viewBox="0 0 12 12"
-        fill="none" stroke="#ccc" strokeWidth="1.5"
-        strokeLinecap="round" strokeLinejoin="round"
-        className="flex-shrink-0"
-      >
+      <span className="text-[10px] text-neutral-400 flex-shrink-0">♥ {recipe.save_count ?? 0}</span>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc"
+        strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
         <path d="M4 2l4 4-4 4" />
       </svg>
     </Link>
