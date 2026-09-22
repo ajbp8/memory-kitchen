@@ -22,10 +22,10 @@ export default function InviteLink() {
 
   return (
     <div className="rounded-xl border p-4" style={{ borderColor: "var(--mk-border)", background: "white" }}>
-      <p className="text-sm font-bold mb-1" style={{ color: "#065130" }}>
+      <p className="text-sm font-bold mb-1 text-center" style={{ color: "#065130" }}>
         Invite someone
       </p>
-      <p className="text-xs text-neutral-500 mb-3">
+      <p className="text-xs text-neutral-500 mb-3 text-center">
         Share Memory Kitchen with family &amp; friends!
       </p>
 
