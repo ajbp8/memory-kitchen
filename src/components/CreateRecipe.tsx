@@ -42,6 +42,16 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   return tags;
 }
 
+// Cleans up OG titles like "Chicken Tikka | BBC Good Food" or "user on Instagram: ..."
+function cleanTitle(raw: string): string {
+  return raw
+    .replace(/\s+on Instagram:.*$/i, "")
+    .replace(/\s+on TikTok:.*$/i, "")
+    .replace(/\s*[\|–\-•]\s*.{1,40}$/, "")
+    .replace(/\s*-\s*YouTube$/i, "")
+    .trim();
+}
+
 export default function CreateRecipe() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -52,6 +62,8 @@ export default function CreateRecipe() {
   const [tags, setTags] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "working" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [fetchingMeta, setFetchingMeta] = useState(false);
+  const [autoFilled, setAutoFilled] = useState(false);
 
   // Auto-classify whenever name or ingredients change
   useEffect(() => {
@@ -62,8 +74,34 @@ export default function CreateRecipe() {
     }
   }, [name, ingredients]);
 
+  async function fetchMetaFromUrl(url: string) {
+    if (!url || !url.startsWith("http")) return;
+    setFetchingMeta(true);
+    try {
+      const res = await fetch(`/api/og?url=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.title) {
+          const cleaned = cleanTitle(data.title);
+          if (cleaned && cleaned.length > 1) {
+            // Only auto-fill if name field is still empty
+            setName(prev => {
+              if (!prev) {
+                setAutoFilled(true);
+                return cleaned;
+              }
+              return prev;
+            });
+          }
+        }
+      }
+    } catch {}
+    setFetchingMeta(false);
+  }
+
   function reset() {
-    setName(""); setStory(""); setIngredients(""); setSourceUrl(""); setTags([]);
+    setName(""); setStory(""); setIngredients(""); setSourceUrl("");
+    setTags([]); setAutoFilled(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -108,24 +146,55 @@ export default function CreateRecipe() {
       style={{ borderColor: "var(--mk-border)", background: "white" }}>
       <p className="text-sm font-bold mb-3" style={{ color: "#1a1a1a" }}>Add a recipe</p>
 
-      <input
-        type="text"
-        required
-        placeholder="Recipe name *"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none mb-2"
-        style={{ borderColor: "var(--mk-border)" }}
-      />
+      {/* URL field first — paste triggers metadata fetch */}
+      <div className="relative mb-2">
+        <input
+          type="url"
+          placeholder="Paste a link (IG, YouTube, website…)"
+          value={sourceUrl}
+          onChange={e => setSourceUrl(e.target.value)}
+          onPaste={e => {
+            const pasted = e.clipboardData.getData("text");
+            if (pasted.startsWith("http")) {
+              // Small delay so the state update lands first
+              setTimeout(() => fetchMetaFromUrl(pasted), 80);
+            }
+          }}
+          onBlur={e => {
+            const val = e.target.value;
+            if (val.startsWith("http") && !name) {
+              fetchMetaFromUrl(val);
+            }
+          }}
+          className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none"
+          style={{ borderColor: "var(--mk-border)" }}
+        />
+        {fetchingMeta && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px]"
+            style={{ color: "#aaa" }}>
+            Fetching…
+          </span>
+        )}
+      </div>
 
-      <input
-        type="url"
-        placeholder="Link (IG, YouTube, website…)"
-        value={sourceUrl}
-        onChange={e => setSourceUrl(e.target.value)}
-        className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none mb-2"
-        style={{ borderColor: "var(--mk-border)" }}
-      />
+      {/* Name field — auto-filled badge shown if we populated it */}
+      <div className="relative mb-2">
+        <input
+          type="text"
+          required
+          placeholder="Recipe name *"
+          value={name}
+          onChange={e => { setName(e.target.value); setAutoFilled(false); }}
+          className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none"
+          style={{ borderColor: autoFilled ? "#1B5E2E" : "var(--mk-border)" }}
+        />
+        {autoFilled && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold"
+            style={{ color: "#1B5E2E" }}>
+            ✓ auto-filled
+          </span>
+        )}
+      </div>
 
       <textarea
         placeholder="Ingredients (optional)"
