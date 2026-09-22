@@ -363,7 +363,7 @@ export default function WeekMenu({
                         <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize" style={{ color: "#bbb" }}>{r.cuisine_tags[0]}</p>}
                       </div>
-                      <span className="text-[10px] flex-shrink-0" style={{ color: "#ccc" }}>tap to plan</span>
+                      <span className="text-[10px] font-semibold underline underline-offset-2 flex-shrink-0" style={{ color: "#aaa" }}>tap to plan</span>
                     </div>
                   ))}
                 </div>
@@ -438,7 +438,7 @@ export default function WeekMenu({
                       style={{ background: "var(--mk-terracotta)", color: "white" }}>Today</span>
                   )}
                   {!isPast && (
-                    <span className="ml-auto text-[10px]" style={{ color: "#ddd" }}>
+                    <span className="ml-auto text-[10px] font-semibold underline underline-offset-2" style={{ color: "#bbb" }}>
                       {anyDishes ? "tap to edit" : "tap to plan"}
                     </span>
                   )}
@@ -469,11 +469,11 @@ export default function WeekMenu({
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
                         <span className="text-[11px] flex-shrink-0">🥗</span>
                         {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
+                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>
                             {d.recipes?.name ?? d.free_text ?? "Side"}
                           </Link>
                         ) : (
-                          <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Side"}</span>
+                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Side"}</span>
                         )}
                         <button onClick={() => removeDish(d.id)}
                           className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
@@ -483,11 +483,11 @@ export default function WeekMenu({
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
                         <span className="text-[11px] flex-shrink-0">☀️</span>
                         {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
+                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>
                             {d.recipes?.name ?? d.free_text ?? "Lunch"}
                           </Link>
                         ) : (
-                          <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Lunch"}</span>
+                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Lunch"}</span>
                         )}
                         <button onClick={() => removeDish(d.id)}
                           className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
@@ -497,11 +497,11 @@ export default function WeekMenu({
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
                         <span className="text-[11px] flex-shrink-0">🌅</span>
                         {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm truncate flex-1" style={{ color: "#555" }}>
+                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>
                             {d.recipes?.name ?? d.free_text ?? "Breakfast"}
                           </Link>
                         ) : (
-                          <span className="text-sm truncate flex-1" style={{ color: "#555" }}>{d.free_text ?? "Breakfast"}</span>
+                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Breakfast"}</span>
                         )}
                         <button onClick={() => removeDish(d.id)}
                           className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
