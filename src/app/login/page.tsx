@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<"idle" | "working" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [notFound, setNotFound] = useState(false);
 
   async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,13 +31,18 @@ export default function LoginPage() {
     }
 
     let message = "Something went wrong.";
+    let isNotFound = false;
     try {
       const data = await res.json();
-      if (data?.error) message = data.error;
+      if (data?.error) {
+        message = data.error;
+        if (res.status === 400 && data.error.includes("No account")) isNotFound = true;
+      }
     } catch {
       // Non-JSON error response — fall back to generic message.
     }
-    setErrorMsg(message);
+    setNotFound(isNotFound);
+    setErrorMsg(isNotFound ? "" : message);
     setStatus("error");
   }
 
@@ -109,8 +115,19 @@ export default function LoginPage() {
             >
               {status === "working" ? "Sending…" : "Send sign-in code"}
             </button>
-            {status === "error" && (
+            {status === "error" && !notFound && (
               <p className="text-sm text-red-600 text-center">{errorMsg}</p>
+            )}
+            {notFound && (
+              <div className="rounded-xl p-4 text-center" style={{ background: "rgba(6,81,48,0.06)", border: "1px solid rgba(6,81,48,0.15)" }}>
+                <p className="text-sm font-semibold mb-1" style={{ color: "#065130" }}>No account for that email</p>
+                <p className="text-xs text-neutral-500 mb-3">You need to create an account first — it only takes a minute.</p>
+                <a href={`/signup?email=${encodeURIComponent(email)}`}
+                  className="block w-full rounded-xl py-2.5 text-sm font-bold text-white"
+                  style={{ background: "#065130" }}>
+                  Create my account →
+                </a>
+              </div>
             )}
           </form>
         ) : (
