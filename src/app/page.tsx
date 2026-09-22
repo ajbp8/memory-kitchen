@@ -32,7 +32,6 @@ export default async function HomePage() {
     supabase
       .from("recipes")
       .select("id, name, cuisine_tags")
-      .eq("owner_id", user.id)
       .order("name"),
   ]);
 
