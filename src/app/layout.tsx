@@ -7,7 +7,7 @@ import SplashScreen from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
   title: "Memory Kitchen",
-  description: "A mobile-first recipe sharing network for family and friends.",
+  description: "Create weekly menus & share recipes you love 🎉🍑!",
   manifest: "/manifest.json",
   icons: {
     icon: "/icons/icon-192.png",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Memory Kitchen",
-    description: "A mobile-first recipe sharing network for family and friends.",
+    description: "Create weekly menus & share recipes you love 🎉🍑!",
     url: "https://peach-a-table.vercel.app",
     siteName: "Memory Kitchen",
     images: [{ url: "https://peach-a-table.vercel.app/og-image.png", width: 1200, height: 630, alt: "Memory Kitchen" }],
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Memory Kitchen",
-    description: "A mobile-first recipe sharing network for family and friends.",
+    description: "Create weekly menus & share recipes you love 🎉🍑!",
     images: ["https://peach-a-table.vercel.app/og-image.png"],
   },
 };
