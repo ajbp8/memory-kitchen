@@ -22,7 +22,7 @@ export default function InviteLink() {
         Invite someone
       </p>
       <p className="text-xs text-neutral-500 mb-3">
-        Share Memory Kitchen with family or friends.
+        Share Memory Kitchen with family & friends!
         {remaining !== null && ` ${remaining} use${remaining === 1 ? "" : "s"} remaining.`}
       </p>
       <button
