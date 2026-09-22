@@ -3,6 +3,8 @@ import InviteLink from "@/components/InviteLink";
 import LogoutButton from "@/components/LogoutButton";
 import EditProfileForm from "@/components/EditProfileForm";
 
+export const runtime = "edge";
+
 export default async function ProfilePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

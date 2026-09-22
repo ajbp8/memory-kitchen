@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 function IconMenu({ active }: { active: boolean }) {
   return (
@@ -46,6 +47,14 @@ const TABS = [
 
 export default function BottomNav() {
   const path = usePathname();
+  const router = useRouter();
+
+  // Prefetch all tab routes on mount so navigation is instant
+  useEffect(() => {
+    router.prefetch("/");
+    router.prefetch("/recipes");
+    router.prefetch("/profile");
+  }, [router]);
 
   return (
     <nav

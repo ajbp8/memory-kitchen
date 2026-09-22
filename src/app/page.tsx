@@ -5,6 +5,8 @@ type Dish = { id: string; recipe_id: string | null; free_text: string | null; re
 type Slot = { id: string; day_date: string; meal_type: string; dishes: Dish[] };
 type WeekData = { week_id: string | null; slots: Slot[] };
 
+export const runtime = "edge";
+
 function getMondayISO(): string {
   const d = new Date();
   const day = d.getDay();
