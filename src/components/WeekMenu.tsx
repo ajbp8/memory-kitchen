@@ -449,64 +449,40 @@ export default function WeekMenu({
                   <p className="text-xs" style={{ color: "#ccc" }}>{isPast ? "Nothing was planned" : "Nothing planned yet"}</p>
                 ) : (
                   <div className="space-y-1">
-                    {dinnerDishes.map(d => (
-                      <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : "🍽️"}</span>
-                        {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`}
-                            className="text-sm font-semibold truncate flex-1 underline-offset-2 hover:underline"
-                            style={{ color: "#1a1a1a" }}>
-                            {d.recipes?.name ?? d.free_text ?? "Dish"}
-                          </Link>
-                        ) : (
-                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Dish"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
-                      </div>
-                    ))}
-                    {sidesDishes.map(d => (
-                      <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">🥗</span>
-                        {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>
-                            {d.recipes?.name ?? d.free_text ?? "Side"}
-                          </Link>
-                        ) : (
-                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Side"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
-                      </div>
-                    ))}
-                    {lunchDishes.map(d => (
-                      <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">☀️</span>
-                        {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>
-                            {d.recipes?.name ?? d.free_text ?? "Lunch"}
-                          </Link>
-                        ) : (
-                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Lunch"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
-                      </div>
-                    ))}
-                    {bfDishes.map(d => (
-                      <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">🌅</span>
-                        {d.recipe_id ? (
-                          <Link href={`/recipes/${d.recipe_id}`} className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>
-                            {d.recipes?.name ?? d.free_text ?? "Breakfast"}
-                          </Link>
-                        ) : (
-                          <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Breakfast"}</span>
-                        )}
-                        <button onClick={() => removeDish(d.id)}
-                          className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
-                      </div>
-                    ))}
+                    {(() => {
+                      // Count how many meal types have dishes
+                      const mealGroups = [
+                        { key: "dinner",    label: "DINNER",    dishes: dinnerDishes },
+                        { key: "sides",     label: "SIDES",     dishes: sidesDishes },
+                        { key: "lunch",     label: "LUNCH",     dishes: lunchDishes },
+                        { key: "breakfast", label: "BREAKFAST", dishes: bfDishes },
+                      ].filter(g => g.dishes.length > 0);
+                      const multiMeal = mealGroups.length > 1;
+                      return mealGroups.map(group => (
+                        <div key={group.key}>
+                          {multiMeal && (
+                            <p className="text-[8px] font-bold uppercase tracking-widest mt-1 mb-0.5"
+                              style={{ color: "#bbb" }}>{group.label}</p>
+                          )}
+                          {group.dishes.map(d => (
+                            <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
+                              <span className="text-[11px] flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : "🍽️"}</span>
+                              {d.recipe_id ? (
+                                <Link href={`/recipes/${d.recipe_id}`}
+                                  className="text-sm font-semibold truncate flex-1 underline-offset-2 hover:underline"
+                                  style={{ color: "#1a1a1a" }}>
+                                  {d.recipes?.name ?? d.free_text ?? "Dish"}
+                                </Link>
+                              ) : (
+                                <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Dish"}</span>
+                              )}
+                              <button onClick={() => removeDish(d.id)}
+                                className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
+                            </div>
+                          ))}
+                        </div>
+                      ));
+                    })()}
                     {isDragTarget && (
                       <p className="text-xs font-semibold pt-0.5" style={{ color: "var(--mk-terracotta)" }}>+ Drop to add dinner</p>
                     )}
