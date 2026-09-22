@@ -367,7 +367,7 @@ export default function WeekMenu({
                         <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize" style={{ color: "#bbb" }}>{r.cuisine_tags[0]}</p>}
                       </div>
-                      <span className="text-[10px] font-semibold underline underline-offset-2 flex-shrink-0" style={{ color: "#aaa" }}>tap to plan</span>
+                      <span className="text-[10px] font-semibold underline underline-offset-2 cursor-pointer flex-shrink-0" style={{ color: "#aaa" }}>tap to plan</span>
                     </div>
                   ))}
                 </div>
@@ -442,7 +442,7 @@ export default function WeekMenu({
                       style={{ background: "var(--mk-terracotta)", color: "white" }}>Today</span>
                   )}
                   {!isPast && (
-                    <span className="ml-auto text-[10px] font-semibold underline underline-offset-2" style={{ color: "#bbb" }}>
+                    <span className="ml-auto text-[10px] font-semibold underline underline-offset-2 cursor-pointer" style={{ color: "#bbb" }}>
                       {anyDishes ? "tap to edit" : "tap to plan"}
                     </span>
                   )}
