@@ -49,7 +49,6 @@ export default function BottomNav() {
   const path = usePathname();
   const router = useRouter();
 
-  // Prefetch all tab routes on mount so navigation is instant
   useEffect(() => {
     router.prefetch("/");
     router.prefetch("/recipes");
@@ -58,27 +57,29 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-white border-t flex"
-      style={{
-        borderColor: "var(--mk-border)",
-        paddingBottom: "env(safe-area-inset-bottom)",
-        zIndex: 40,
-      }}
+      className="fixed bottom-0 left-0 right-0 bg-white border-t"
+      style={{ borderColor: "var(--mk-border)", zIndex: 40 }}
     >
-      {TABS.map(({ href, label, Icon }) => {
-        const isActive = href === "/" ? path === "/" : path.startsWith(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            className="flex-1 flex flex-col items-center py-2.5 gap-0.5 transition-colors"
-            style={{ color: isActive ? "var(--mk-gold, #D4A017)" : "#bbb" }}
-          >
-            <Icon active={isActive} />
-            <span className="text-[10px] font-semibold">{label}</span>
-          </Link>
-        );
-      })}
+      {/* Constrain to app width so icons don't spread on desktop */}
+      <div
+        className="max-w-md mx-auto flex"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        {TABS.map(({ href, label, Icon }) => {
+          const isActive = href === "/" ? path === "/" : path.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className="flex-1 flex flex-col items-center py-2.5 gap-0.5 transition-colors"
+              style={{ color: isActive ? "var(--mk-gold, #D4A017)" : "#bbb" }}
+            >
+              <Icon active={isActive} />
+              <span className="text-[10px] font-semibold">{label}</span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }
