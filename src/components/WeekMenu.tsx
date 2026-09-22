@@ -11,14 +11,21 @@ type NestorSuggestion = { name: string; description: string; cookTime?: string }
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const CUISINE_EMOJI: Record<string, string> = {
-  // Primary categories
-  meat: "🥩", poultry: "🍗", seafood: "🐟", vegetarian: "🥬", dessert: "🍰",
-  // Descriptive tags
-  pasta: "🍝", rice: "🍚", soup: "🍲", curry: "🍛", salad: "🥗",
-  // Legacy cuisine names (recipes added before redesign)
-  italian: "🍝", mexican: "🌮", indian: "🍛", chinese: "🥡", japanese: "🍣",
-  thai: "🍜", french: "🥐", mediterranean: "🥙", american: "🍔",
-  "middle-eastern": "🫙", baking: "🍞",
+  // Primary classifier tags (matches RecipeCard CUISINE_STYLES)
+  meat: "🥩", poultry: "🍗", seafood: "🐟",
+  vegetarian: "🥗", vegan: "🌱", dessert: "🍰",
+  baking: "🍞", breakfast: "🍳", snack: "🥨", sauce: "🫙",
+  // Cuisine / style tags
+  italian: "🍝", pasta: "🍝", mexican: "🌮", indian: "🍛",
+  chinese: "🥡", japanese: "🍣", thai: "🍜", french: "🥐",
+  mediterranean: "🥙", american: "🍔", asian: "🍜",
+  // Ingredient tags
+  beef: "🥩", pork: "🥩", lamb: "🥩", chicken: "🍗", turkey: "🍗",
+  fish: "🐟", salmon: "🐟",
+  // Dish type tags
+  soup: "🍲", salad: "🥗", rice: "🍚", curry: "🍛",
+  egg: "🍳", eggs: "🍳",
+  "middle-eastern": "🫙",
 };
 const MEAL_TABS = [
   { key: "dinner",    label: "Dinner",    icon: "🍽️" },
@@ -444,7 +451,7 @@ export default function WeekMenu({
                   <div className="space-y-1">
                     {dinnerDishes.map(d => (
                       <div key={d.id} className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                        <span className="text-[11px] flex-shrink-0">🍽️</span>
+                        <span className="text-[11px] flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : "🍽️"}</span>
                         {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`}
                             className="text-sm font-semibold truncate flex-1 underline-offset-2 hover:underline"
