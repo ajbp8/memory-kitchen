@@ -3,16 +3,10 @@ import { useState } from "react";
 
 export default function InviteLink() {
   const [status, setStatus] = useState<"idle" | "working" | "copied" | "error">("idle");
-  const [remaining, setRemaining] = useState<number | null>(null);
-
   async function handleClick() {
     setStatus("working");
-    const res = await fetch("/api/invites", { method: "POST" });
-    if (!res.ok) { setStatus("error"); return; }
-    const { token, invitesRemaining } = await res.json();
-    const link = `${window.location.origin}/join?token=${token}`;
+    const link = window.location.origin;
     try { await navigator.clipboard.writeText(link); } catch {}
-    setRemaining(invitesRemaining);
     setStatus("copied");
   }
 
@@ -23,7 +17,7 @@ export default function InviteLink() {
       </p>
       <p className="text-xs text-neutral-500 mb-3">
         Share Memory Kitchen with family & friends!
-        {remaining !== null && ` ${remaining} use${remaining === 1 ? "" : "s"} remaining.`}
+        
       </p>
       <button
         onClick={handleClick}
