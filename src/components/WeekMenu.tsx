@@ -285,14 +285,18 @@ export default function WeekMenu({
 
       {/* ── Banner ── */}
       <div style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }} className="px-5 pt-10 pb-4">
-        <div className="flex items-center gap-2.5 mb-0.5">
-          <AppLogo />
-          <span style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1.1 }}>
-            <span style={{ color: "white" }}>Memory</span>
-            <span style={{ color: "#FFE580" }}> Kitchen</span>
-          </span>
+        <div className="flex items-center mb-4">
+          <div>
+            <span style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1.1, display: "block" }}>
+              <span style={{ color: "white" }}>Memory</span>
+              <span style={{ color: "#FFE580" }}> Kitchen</span>
+            </span>
+            <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>Maman, what&apos;s for dinner? 😊</p>
+          </div>
+          <div className="ml-auto">
+            <AppLogo />
+          </div>
         </div>
-        <p className="text-xs font-medium mb-4 pl-9" style={{ color: "rgba(255,255,255,0.6)" }}>Maman, what&apos;s for dinner? 😊</p>
 
         <div ref={searchContainerRef} className="relative">
           <input
