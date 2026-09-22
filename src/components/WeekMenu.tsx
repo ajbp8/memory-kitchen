@@ -109,7 +109,7 @@ function formatDayFull(iso: string) {
 function AppLogo() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/logo.png" width="32" height="32" alt="" aria-hidden />
+    <img src="/logo-header.png" width="40" height="40" alt="" aria-hidden style={{ display: "block" }} />
   );
 }
 
@@ -287,7 +287,7 @@ export default function WeekMenu({
       <div style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }} className="px-5 pt-10 pb-4">
         <div className="flex items-center gap-2.5 mb-0.5">
           <AppLogo />
-          <span style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1 }}>
+          <span style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1.1 }}>
             <span style={{ color: "white" }}>Memory</span>
             <span style={{ color: "#FFE580" }}> Kitchen</span>
           </span>
