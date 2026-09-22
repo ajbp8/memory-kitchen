@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // authenticated routes. Invite-only enforcement itself happens at
 // sign-in/sign-up time (see src/app/login, src/app/join) — this just
 // gates access to the app for sessions that aren't logged in.
-const PUBLIC_PATHS = ["/login", "/join", "/auth/callback", "/manifest.json", "/sw.js", "/api/login", "/api/join"];
+const PUBLIC_PATHS = ["/login", "/signup", "/join", "/auth/callback", "/manifest.json", "/sw.js", "/api/login", "/api/signup", "/api/join"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });

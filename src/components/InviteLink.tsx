@@ -6,14 +6,14 @@ export default function InviteLink() {
 
   async function handleCopy() {
     setStatus("working");
-    const link = window.location.origin;
+    const link = window.location.origin + "/signup";
     try { await navigator.clipboard.writeText(link); } catch {}
     setStatus("copied");
     setTimeout(() => setStatus("idle"), 2500);
   }
 
   function handleWhatsApp() {
-    const link = window.location.origin;
+    const link = window.location.origin + "/signup";
     const text = encodeURIComponent(
       `Join me on Memory Kitchen — create weekly menus & share recipes you love! 🍑🎉\n${link}`
     );
