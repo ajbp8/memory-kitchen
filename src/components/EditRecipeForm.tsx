@@ -173,7 +173,7 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
               <button type="button"
                 onClick={async () => {
                   setDeleting("working");
-                  await fetch(\`/api/recipes/\${recipeId}\`, { method: "DELETE" });
+                  await fetch(`/api/recipes/${recipe.id}`, { method: "DELETE" });
                   router.push("/recipes");
                   router.refresh();
                 }}
