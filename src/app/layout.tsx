@@ -3,6 +3,7 @@ import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import RegisterSW from "@/components/RegisterSW";
 import AuthSessionListener from "@/components/AuthSessionListener";
+import SplashScreen from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
   title: "Memory Kitchen",
@@ -37,6 +38,7 @@ export default function RootLayout({
         className="font-sans antialiased pb-16"
         style={{ background: "#e8e4df" }}
       >
+        <SplashScreen />
         <AuthSessionListener />
         <RegisterSW />
         <div className="max-w-md mx-auto relative min-h-dvh bg-[var(--mk-cream)]">
