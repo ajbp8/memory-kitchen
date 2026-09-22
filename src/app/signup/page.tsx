@@ -60,12 +60,14 @@ export default function SignupPage() {
       return;
     }
 
-    // Save name to users table
+    // Save name to users table + auto-join the default household
     if (data.user) {
       await supabase.from("users").upsert({
         id: data.user.id,
         name: `${firstName} ${lastName}`.trim(),
       });
+      // Non-blocking — if this fails the user still gets in
+      fetch("/api/auto-join-family", { method: "POST" }).catch(() => {});
     }
 
     window.location.assign("/");
