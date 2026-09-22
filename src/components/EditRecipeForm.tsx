@@ -25,6 +25,8 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
   const [sourceUrl, setSourceUrl] = useState(recipe.source_url ?? "");
   const [ingredients, setIngredients] = useState(ingredientsToText(recipe.ingredients));
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
+  const [deleting, setDeleting] = useState<"idle" | "confirm" | "working">("idle");
+  const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -148,6 +150,45 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
       >
         {status === "saving" ? "Saving…" : "Save changes"}
       </button>
+
+      {/* Delete recipe */}
+      <div className="mt-6 pt-4 border-t" style={{ borderColor: "var(--mk-border)" }}>
+        {deleting === "idle" && (
+          <button
+            type="button"
+            onClick={() => setDeleting("confirm")}
+            className="w-full text-xs text-red-400 py-2 hover:text-red-600 transition-colors"
+          >
+            Delete this recipe
+          </button>
+        )}
+        {deleting === "confirm" && (
+          <div className="text-center">
+            <p className="text-xs text-neutral-500 mb-2">Are you sure? This cannot be undone.</p>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => setDeleting("idle")}
+                className="flex-1 rounded-xl border py-2 text-xs font-semibold"
+                style={{ borderColor: "var(--mk-border)", color: "#888" }}>
+                Cancel
+              </button>
+              <button type="button"
+                onClick={async () => {
+                  setDeleting("working");
+                  await fetch(\`/api/recipes/\${recipeId}\`, { method: "DELETE" });
+                  router.push("/recipes");
+                  router.refresh();
+                }}
+                className="flex-1 rounded-xl py-2 text-xs font-bold text-white"
+                style={{ background: "#dc2626" }}>
+                Yes, delete
+              </button>
+            </div>
+          </div>
+        )}
+        {deleting === "working" && (
+          <p className="text-xs text-center text-neutral-400">Deleting…</p>
+        )}
+      </div>
     </form>
   );
 }
