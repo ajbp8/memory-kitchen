@@ -277,7 +277,7 @@ export default function WeekMenu({
     <div className="min-h-screen pb-20" style={{ background: "var(--mk-cream)" }}>
 
       {/* ── Banner ── */}
-      <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }} className="px-5 pt-10 pb-4">
+      <div style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }} className="px-5 pt-10 pb-4">
         <div className="flex items-center gap-2.5 mb-0.5">
           <AppLogo />
           <span style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1 }}>
@@ -513,10 +513,10 @@ export default function WeekMenu({
         {/* ── Recipe Genie ── */}
         {!loading && (
           <div className="mt-6">
-            <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #1B5E2E" }}>
+            <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid #065130" }}>
               {/* Header strip */}
               <div className="px-4 py-3 flex items-center gap-2.5"
-                style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}>
+                style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }}>
                 <span style={{ fontSize: "22px", color: "#FFE580", lineHeight: 1 }}>✦</span>
                 <div>
                   <p style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", lineHeight: 1, color: "white" }}>Recipe Genie</p>
@@ -535,7 +535,7 @@ export default function WeekMenu({
                     onKeyDown={e => e.key === "Enter" && askNestor()}
                     placeholder="What's in your kitchen?"
                     className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none"
-                    style={{ background: "white", border: "1px solid rgba(27,94,46,0.25)", color: "#1a1a1a" }}
+                    style={{ background: "white", border: "1px solid rgba(6,81,48,0.25)", color: "#1a1a1a" }}
                   />
                   <button
                     onClick={askNestor}
@@ -547,7 +547,7 @@ export default function WeekMenu({
                   </button>
                 </div>
                 {nestorLoading && (
-                  <p className="text-xs mt-2 animate-pulse" style={{ color: "#1B5E2E" }}>Recipe Genie is thinking…</p>
+                  <p className="text-xs mt-2 animate-pulse" style={{ color: "#065130" }}>Recipe Genie is thinking…</p>
                 )}
                 {nestorError && (
                   <p className="text-xs mt-2" style={{ color: "var(--mk-terracotta)" }}>{nestorError}</p>
@@ -556,7 +556,7 @@ export default function WeekMenu({
                   <div className="mt-3 space-y-2">
                     {nestorResults.map((r, i) => (
                       <div key={i} className="rounded-xl px-3 py-3"
-                        style={{ background: "white", border: "1px solid rgba(27,94,46,0.18)" }}>
+                        style={{ background: "white", border: "1px solid rgba(6,81,48,0.18)" }}>
                         <div className="flex items-start justify-between gap-2 mb-1">
                           <p className="text-sm font-bold leading-snug" style={{ color: "#1a1a1a" }}>{r.name}</p>
                           {r.cookTime && <span className="text-[10px] text-neutral-400 flex-shrink-0 mt-0.5">{r.cookTime}</span>}

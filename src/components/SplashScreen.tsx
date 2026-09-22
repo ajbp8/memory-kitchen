@@ -26,7 +26,7 @@ export default function SplashScreen() {
     <div
       className="fixed inset-0 z-[999] flex flex-col items-center justify-center px-8"
       style={{
-        background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)",
+        background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)",
         transition: "opacity 0.55s ease",
         opacity: fading ? 0 : 1,
         pointerEvents: fading ? "none" : "auto",

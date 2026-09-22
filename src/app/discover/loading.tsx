@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <main className="min-h-screen pb-24" style={{ background: "var(--mk-cream)" }}>
-      <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}
+      <div style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }}
         className="px-5 pt-10 pb-5">
         <div className="h-7 w-32 rounded-lg mb-2 animate-pulse" style={{ background: "rgba(255,255,255,0.2)" }} />
         <div className="h-4 w-40 rounded-lg animate-pulse" style={{ background: "rgba(255,255,255,0.15)" }} />

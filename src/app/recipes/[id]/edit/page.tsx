@@ -32,7 +32,7 @@ export default async function EditRecipePage({
 
       {/* Header */}
       <div
-        style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}
+        style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }}
         className="px-5 pt-10 pb-6"
       >
         <Link

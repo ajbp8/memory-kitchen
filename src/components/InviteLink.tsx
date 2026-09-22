@@ -12,7 +12,7 @@ export default function InviteLink() {
 
   return (
     <div className="rounded-xl border p-4" style={{ borderColor: "var(--mk-border)", background: "white" }}>
-      <p className="text-sm font-bold mb-1" style={{ color: "#1B5E2E" }}>
+      <p className="text-sm font-bold mb-1" style={{ color: "#065130" }}>
         Invite someone
       </p>
       <p className="text-xs text-neutral-500 mb-3">
@@ -23,7 +23,7 @@ export default function InviteLink() {
         onClick={handleClick}
         disabled={status === "working"}
         className="w-full rounded-xl py-2.5 text-sm font-bold text-white disabled:opacity-50"
-        style={{ background: status === "copied" ? "#1B5E2E" : "#D4A017" }}
+        style={{ background: status === "copied" ? "#065130" : "#D4A017" }}
       >
         {status === "working" ? "Generating…"
           : status === "copied" ? "✓ Link copied!"

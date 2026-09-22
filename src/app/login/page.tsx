@@ -82,7 +82,7 @@ export default function LoginPage() {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl font-bold text-center mb-2" style={{ color: "#1B5E2E" }}>
+        <h1 className="text-2xl font-bold text-center mb-2" style={{ color: "#065130" }}>
           Memory Kitchen
         </h1>
 

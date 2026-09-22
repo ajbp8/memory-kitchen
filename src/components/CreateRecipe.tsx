@@ -157,7 +157,7 @@ export default function CreateRecipe() {
       <button
         onClick={() => setOpen(true)}
         className="w-full rounded-xl py-3 text-sm font-bold"
-        style={{ background: "#1B5E2E", color: "white" }}
+        style={{ background: "#065130", color: "white" }}
       >
         + Add a recipe
       </button>
@@ -205,14 +205,14 @@ export default function CreateRecipe() {
           value={name}
           onChange={e => { setName(e.target.value); setAutoFilled(false); setTranslated(false); setOriginalName(""); }}
           className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none pr-24"
-          style={{ borderColor: translated ? "#D4A017" : autoFilled ? "#1B5E2E" : "var(--mk-border)" }}
+          style={{ borderColor: translated ? "#D4A017" : autoFilled ? "#065130" : "var(--mk-border)" }}
         />
         {translated ? (
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#D4A017" }}>
             ✓ translated
           </span>
         ) : autoFilled ? (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#1B5E2E" }}>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#065130" }}>
             ✓ auto-filled
           </span>
         ) : null}
@@ -260,8 +260,8 @@ export default function CreateRecipe() {
             {tags.map((tag, i) => (
               <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full"
                 style={{
-                  background: i === 0 ? "rgba(27,94,46,0.15)" : "rgba(27,94,46,0.07)",
-                  color: "#1B5E2E",
+                  background: i === 0 ? "rgba(6,81,48,0.15)" : "rgba(6,81,48,0.07)",
+                  color: "#065130",
                   fontWeight: i === 0 ? 700 : 500,
                 }}>
                 {tag}

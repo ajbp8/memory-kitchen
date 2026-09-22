@@ -76,7 +76,7 @@ export default function SignupPage() {
       <div className="w-full max-w-sm">
         <h1
           className="text-2xl font-bold text-center mb-1"
-          style={{ color: "#1B5E2E" }}
+          style={{ color: "#065130" }}
         >
           Join Memory Kitchen
         </h1>

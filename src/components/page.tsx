@@ -47,7 +47,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
     <div className="min-h-screen" style={{ background: "var(--mk-cream)" }}>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}
+      <div style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }}
         className="px-5 pt-10 pb-6">
         <Link
           href="/discover"
@@ -94,7 +94,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
             {(recipe.cuisine_tags as string[]).map((tag: string) => (
               <span key={tag}
                 className="text-xs font-medium px-2.5 py-1 rounded-full capitalize"
-                style={{ background: "rgba(27,94,46,0.1)", color: "#1B5E2E" }}>
+                style={{ background: "rgba(6,81,48,0.1)", color: "#065130" }}>
                 {tag}
               </span>
             ))}
@@ -133,7 +133,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           <div className="bg-white rounded-xl border p-4" style={{ borderColor: "var(--mk-border)" }}>
             <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "#D4A017" }}>Source</p>
             <a href={recipe.source_url} target="_blank" rel="noopener noreferrer"
-              className="text-sm underline break-all" style={{ color: "#1B5E2E" }}>
+              className="text-sm underline break-all" style={{ color: "#065130" }}>
               {recipe.source_url}
             </a>
           </div>

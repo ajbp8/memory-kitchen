@@ -118,7 +118,7 @@ export default function EditProfileForm({
         {/* Camera badge — outside overflow-hidden, sits on top */}
         <div
           className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center"
-          style={{ background: "#D4A017", border: "2px solid rgba(27,94,46,0.8)" }}
+          style={{ background: "#D4A017", border: "2px solid rgba(6,81,48,0.8)" }}
           aria-label="Change profile photo"
         >
           {avatarUploading ? (

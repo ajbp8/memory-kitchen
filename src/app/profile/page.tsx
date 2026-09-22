@@ -23,7 +23,7 @@ export default async function ProfilePage() {
     <main className="min-h-screen pb-24" style={{ background: "var(--mk-cream)" }}>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #1B5E2E 0%, #2E7A3E 100%)" }}
+      <div style={{ background: "linear-gradient(135deg, #065130 0%, #0A6B3E 100%)" }}
         className="px-5 pt-10 pb-8 text-center">
         <EditProfileForm
           userId={user.id}
