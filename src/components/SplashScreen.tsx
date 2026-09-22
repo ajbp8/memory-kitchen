@@ -16,7 +16,7 @@ export default function SplashScreen() {
 
     setVisible(true);
     const fadeTimer  = setTimeout(() => setFading(true),  5000);
-    const hideTimer  = setTimeout(() => setVisible(false), 10000);
+    const hideTimer  = setTimeout(() => setVisible(false), 5600);
     return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer); };
   }, []);
 
