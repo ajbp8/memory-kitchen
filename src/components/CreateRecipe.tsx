@@ -257,8 +257,8 @@ export default function CreateRecipe() {
           {tags.map((tag, i) => (
             <span key={tag} className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full"
               style={{
-                background: i === 0 ? "rgba(6,81,48,0.15)" : "rgba(6,81,48,0.07)",
-                color: "#065130", fontWeight: i === 0 ? 700 : 500,
+                background: "rgba(6,81,48,0.15)",
+                color: "#065130", fontWeight: 700,
               }}>
               {tag}
               <button type="button" onClick={() => removeTag(tag)}
