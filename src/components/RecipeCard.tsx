@@ -3,9 +3,11 @@ import Link from "next/link";
 export type RecipeCardData = {
   id: string;
   name: string;
+  original_name?: string | null;
   cuisine_tags?: string[] | null;
   save_count?: number | null;
   users?: { name: string | null } | { name: string | null }[] | null;
+  owner_id?: string;
 };
 
 const CUISINE_STYLES: Record<string, { emoji: string; bg: string }> = {
@@ -77,11 +79,16 @@ export default function RecipeCard({
         {emoji}
       </div>
 
-      {/* Name + owner */}
+      {/* Name + original + owner */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold truncate" style={{ color: "#1a1a1a" }}>
           {recipe.name}
         </p>
+        {recipe.original_name && (
+          <p className="text-[10px] truncate" style={{ color: "#9a7a3a", fontStyle: "italic" }}>
+            {recipe.original_name}
+          </p>
+        )}
         {owner && (
           <p className="text-[10px] text-neutral-400 truncate">by {owner}</p>
         )}

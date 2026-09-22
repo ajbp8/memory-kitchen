@@ -42,6 +42,7 @@ export async function POST(request: Request) {
         typeof body.ingredients === "string" ? body.ingredients.trim() || null : null,
       source_url:
         typeof body.source_url === "string" ? body.source_url.trim() || null : null,
+      original_name: typeof body.original_name === "string" ? body.original_name.trim() || null : null,
       cuisine_tags: toStringArray(body.cuisine_tags),
       dietary_tags: toStringArray(body.dietary_tags),
       visibility,
@@ -89,7 +90,7 @@ export async function GET(request: Request) {
 
   if (q) {
     const term = `%${q}%`;
-    query = query.or(`name.ilike.${term},ingredients.ilike.${term}`);
+    query = query.or(`name.ilike.${term},original_name.ilike.${term},ingredients.ilike.${term}`);
   }
 
   if (cuisine) {

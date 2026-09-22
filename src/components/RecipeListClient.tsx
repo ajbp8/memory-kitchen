@@ -31,7 +31,7 @@ export default function RecipeListClient({ userId, initialRecipes }: Props) {
     const { data } = await supabase
       .from("recipes")
       .select("id, name, cuisine_tags, save_count, owner_id")
-      .or(`name.ilike.${term},ingredients.ilike.${term}`)
+      .or(`name.ilike.${term},original_name.ilike.${term},ingredients.ilike.${term}`)
       .order("created_at", { ascending: false })
       .limit(150);
     setRecipes(data ?? []);

@@ -11,7 +11,7 @@ export default async function RecipesPage() {
 
   const { data: recipes } = await supabase
     .from("recipes")
-    .select("id, name, cuisine_tags, save_count, owner_id")
+    .select("id, name, original_name, cuisine_tags, save_count, owner_id")
     .order("created_at", { ascending: false })
     .limit(150);
 

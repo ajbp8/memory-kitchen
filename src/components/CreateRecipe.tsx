@@ -63,6 +63,7 @@ export default function CreateRecipe() {
   const [autoFilled, setAutoFilled] = useState(false);
   const [translating, setTranslating] = useState(false);
   const [translated, setTranslated] = useState(false);
+  const [originalName, setOriginalName] = useState("");
 
   useEffect(() => {
     if (name || ingredients) {
@@ -86,6 +87,7 @@ export default function CreateRecipe() {
               if (!prev) {
                 setAutoFilled(true);
                 setTranslated(false);
+                setOriginalName("");
                 return cleaned;
               }
               return prev;
@@ -109,6 +111,7 @@ export default function CreateRecipe() {
       if (res.ok) {
         const data = await res.json();
         if (data.translated) {
+          setOriginalName(name); // save before overwriting
           setName(data.translated);
           setTranslated(true);
           setAutoFilled(false);
@@ -120,7 +123,7 @@ export default function CreateRecipe() {
 
   function reset() {
     setName(""); setStory(""); setIngredients(""); setSourceUrl("");
-    setTags([]); setAutoFilled(false); setTranslated(false);
+    setTags([]); setAutoFilled(false); setTranslated(false); setOriginalName("");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -132,6 +135,7 @@ export default function CreateRecipe() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name,
+        original_name: originalName || null,
         story,
         ingredients,
         source_url: sourceUrl,
@@ -199,7 +203,7 @@ export default function CreateRecipe() {
           required
           placeholder="Recipe name *"
           value={name}
-          onChange={e => { setName(e.target.value); setAutoFilled(false); setTranslated(false); }}
+          onChange={e => { setName(e.target.value); setAutoFilled(false); setTranslated(false); setOriginalName(""); }}
           className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none pr-24"
           style={{ borderColor: translated ? "#D4A017" : autoFilled ? "#1B5E2E" : "var(--mk-border)" }}
         />
