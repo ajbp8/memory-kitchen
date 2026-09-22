@@ -13,7 +13,10 @@ const RICE_KW    = new Set(["rice","risotto","paella","pilaf","pilau","bulgur","
 const SOUP_KW    = new Set(["soup","stew","broth","chowder","bisque","gazpacho","minestrone","goulash","cassoulet"]);
 const CURRY_KW   = new Set(["curry","dhal","dal","tikka","masala","korma","tagine"]);
 const SALAD_KW   = new Set(["salad"]);
+const VEGETARIAN_KW = new Set(["vegetarian","vegan","tofu","tempeh","lentil","lentils","chickpea","chickpeas","bean","beans","veggie","vegetable","vegetables"]);
 // ─────────────────────────────────────────────────────────────────────────────
+
+const ALL_TAGS = ["meat","poultry","seafood","vegetarian","vegan","pasta","rice","soup","curry","salad","dessert","baking","breakfast","snack","sauce"];
 
 function classifyRecipe(name: string, ingredients: string): string[] {
   const nameText = name.toLowerCase();
@@ -23,14 +26,16 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   const nameHas = (kwSet: Set<string>) => [...kwSet].some(kw => nameText.includes(kw));
   const anyHas  = (kwSet: Set<string>) => [...kwSet].some(kw => words.has(kw));
 
-  let primary: string;
-  if      (anyHas(MEAT_KW))                             primary = "meat";
-  else if (anyHas(POULTRY_KW))                          primary = "poultry";
-  else if (anyHas(SEAFOOD_KW))                          primary = "seafood";
-  else if (nameHas(DESSERT_NAME_KW) || anyHas(DESSERT_ING_KW)) primary = "dessert";
-  else                                                  primary = "vegetarian";
+  const tags: string[] = [];
 
-  const tags: string[] = [primary];
+  // Primary — only tag if there's an actual match; no default fallback
+  if      (anyHas(MEAT_KW))                                   tags.push("meat");
+  else if (anyHas(POULTRY_KW))                                tags.push("poultry");
+  else if (anyHas(SEAFOOD_KW))                                tags.push("seafood");
+  else if (nameHas(DESSERT_NAME_KW) || anyHas(DESSERT_ING_KW)) tags.push("dessert");
+  else if (anyHas(VEGETARIAN_KW))                             tags.push("vegetarian");
+  // If nothing matched, leave primary empty — user can add manually
+
   if (anyHas(PASTA_KW))  tags.push("pasta");
   if (anyHas(RICE_KW))   tags.push("rice");
   if (anyHas(SOUP_KW))   tags.push("soup");
@@ -57,6 +62,7 @@ export default function CreateRecipe() {
   const [ingredients, setIngredients] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [showTagPicker, setShowTagPicker] = useState(false);
   const [status, setStatus] = useState<"idle" | "working" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [fetchingMeta, setFetchingMeta] = useState(false);
@@ -111,7 +117,7 @@ export default function CreateRecipe() {
       if (res.ok) {
         const data = await res.json();
         if (data.translated) {
-          setOriginalName(name); // save before overwriting
+          setOriginalName(name);
           setName(data.translated);
           setTranslated(true);
           setAutoFilled(false);
@@ -121,9 +127,19 @@ export default function CreateRecipe() {
     setTranslating(false);
   }
 
+  function removeTag(tag: string) {
+    setTags(prev => prev.filter(t => t !== tag));
+  }
+
+  function addTag(tag: string) {
+    if (!tags.includes(tag)) setTags(prev => [...prev, tag]);
+    setShowTagPicker(false);
+  }
+
   function reset() {
     setName(""); setStory(""); setIngredients(""); setSourceUrl("");
     setTags([]); setAutoFilled(false); setTranslated(false); setOriginalName("");
+    setShowTagPicker(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -164,6 +180,8 @@ export default function CreateRecipe() {
     );
   }
 
+  const availableTags = ALL_TAGS.filter(t => !tags.includes(t));
+
   return (
     <form onSubmit={handleSubmit} className="rounded-xl border p-4"
       style={{ borderColor: "var(--mk-border)", background: "white" }}>
@@ -178,13 +196,10 @@ export default function CreateRecipe() {
           onChange={e => setSourceUrl(e.target.value)}
           onPaste={e => {
             const pasted = e.clipboardData.getData("text");
-            if (pasted.startsWith("http")) {
-              setTimeout(() => fetchMetaFromUrl(pasted), 80);
-            }
+            if (pasted.startsWith("http")) setTimeout(() => fetchMetaFromUrl(pasted), 80);
           }}
           onBlur={e => {
-            const val = e.target.value;
-            if (val.startsWith("http") && !name) fetchMetaFromUrl(val);
+            if (e.target.value.startsWith("http") && !name) fetchMetaFromUrl(e.target.value);
           }}
           className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none"
           style={{ borderColor: "var(--mk-border)" }}
@@ -196,7 +211,7 @@ export default function CreateRecipe() {
         )}
       </div>
 
-      {/* Name field + translate button */}
+      {/* Name field */}
       <div className="relative mb-1">
         <input
           type="text"
@@ -208,84 +223,83 @@ export default function CreateRecipe() {
           style={{ borderColor: translated ? "#D4A017" : autoFilled ? "#065130" : "var(--mk-border)" }}
         />
         {translated ? (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#D4A017" }}>
-            ✓ translated
-          </span>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#D4A017" }}>✓ translated</span>
         ) : autoFilled ? (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#065130" }}>
-            ✓ auto-filled
-          </span>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#065130" }}>✓ auto-filled</span>
         ) : null}
       </div>
 
-      {/* Translate button — shown when name is filled and not yet translated */}
+      {/* Translate button */}
       {name && !translated && (
         <div className="mb-2">
-          <button
-            type="button"
-            onClick={handleTranslate}
-            disabled={translating}
+          <button type="button" onClick={handleTranslate} disabled={translating}
             className="text-[11px] font-semibold px-3 py-1 rounded-full"
-            style={{ background: "rgba(212,160,23,0.12)", color: "#D4A017", border: "1px solid rgba(212,160,23,0.3)" }}
-          >
+            style={{ background: "rgba(212,160,23,0.12)", color: "#D4A017", border: "1px solid rgba(212,160,23,0.3)" }}>
             {translating ? "Translating…" : "🌐 Translate to English"}
           </button>
         </div>
       )}
 
-      <textarea
-        placeholder="Ingredients (optional)"
-        value={ingredients}
-        onChange={e => setIngredients(e.target.value)}
-        rows={2}
+      <textarea placeholder="Ingredients (optional)" value={ingredients}
+        onChange={e => setIngredients(e.target.value)} rows={2}
         className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none mb-2"
-        style={{ borderColor: "var(--mk-border)" }}
-      />
+        style={{ borderColor: "var(--mk-border)" }} />
 
-      <textarea
-        placeholder="Notes or story (optional)"
-        value={story}
-        onChange={e => setStory(e.target.value)}
-        rows={2}
+      <textarea placeholder="Notes or story (optional)" value={story}
+        onChange={e => setStory(e.target.value)} rows={2}
         className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none mb-3"
-        style={{ borderColor: "var(--mk-border)" }}
-      />
+        style={{ borderColor: "var(--mk-border)" }} />
 
-      {tags.length > 0 && (
-        <div className="mb-3">
-          <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "#aaa" }}>
-            Category
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {tags.map((tag, i) => (
-              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full"
-                style={{
-                  background: i === 0 ? "rgba(6,81,48,0.15)" : "rgba(6,81,48,0.07)",
-                  color: "#065130",
-                  fontWeight: i === 0 ? 700 : 500,
-                }}>
-                {tag}
-              </span>
-            ))}
+      {/* Category tags — editable */}
+      <div className="mb-3">
+        <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "#aaa" }}>Category</p>
+        <div className="flex flex-wrap gap-1.5 items-center">
+          {tags.map((tag, i) => (
+            <span key={tag} className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full"
+              style={{
+                background: i === 0 ? "rgba(6,81,48,0.15)" : "rgba(6,81,48,0.07)",
+                color: "#065130", fontWeight: i === 0 ? 700 : 500,
+              }}>
+              {tag}
+              <button type="button" onClick={() => removeTag(tag)}
+                className="ml-0.5 leading-none opacity-60 hover:opacity-100"
+                style={{ fontSize: 11 }}>✕</button>
+            </span>
+          ))}
+
+          {/* Add tag button */}
+          <div className="relative">
+            <button type="button" onClick={() => setShowTagPicker(v => !v)}
+              className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
+              style={{ background: "rgba(0,0,0,0.05)", color: "#888", border: "1px dashed #ccc" }}>
+              + add
+            </button>
+            {showTagPicker && availableTags.length > 0 && (
+              <div className="absolute left-0 top-7 z-50 rounded-xl border bg-white shadow-lg p-2 flex flex-wrap gap-1.5"
+                style={{ borderColor: "var(--mk-border)", minWidth: 200 }}>
+                {availableTags.map(tag => (
+                  <button key={tag} type="button" onClick={() => addTag(tag)}
+                    className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                    style={{ background: "rgba(6,81,48,0.08)", color: "#065130" }}>
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       <div className="flex gap-2">
-        <button
-          type="button"
+        <button type="button"
           onClick={() => { setOpen(false); setErrorMsg(""); setStatus("idle"); reset(); }}
           className="flex-1 rounded-xl border py-2.5 text-sm font-semibold"
-          style={{ borderColor: "var(--mk-border)", color: "#888" }}
-        >
+          style={{ borderColor: "var(--mk-border)", color: "#888" }}>
           Cancel
         </button>
-        <button
-          type="submit"
-          disabled={status === "working"}
+        <button type="submit" disabled={status === "working"}
           className="flex-1 rounded-xl py-2.5 text-sm font-bold text-white disabled:opacity-50"
-          style={{ background: "#D4A017" }}
-        >
+          style={{ background: "#D4A017" }}>
           {status === "working" ? "Saving…" : "Save recipe"}
         </button>
       </div>
