@@ -23,7 +23,6 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   const nameHas = (kwSet: Set<string>) => [...kwSet].some(kw => nameText.includes(kw));
   const anyHas  = (kwSet: Set<string>) => [...kwSet].some(kw => words.has(kw));
 
-  // Primary category — priority: meat > poultry > seafood > dessert > vegetarian
   let primary: string;
   if      (anyHas(MEAT_KW))                             primary = "meat";
   else if (anyHas(POULTRY_KW))                          primary = "poultry";
@@ -31,7 +30,6 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   else if (nameHas(DESSERT_NAME_KW) || anyHas(DESSERT_ING_KW)) primary = "dessert";
   else                                                  primary = "vegetarian";
 
-  // Descriptive tags
   const tags: string[] = [primary];
   if (anyHas(PASTA_KW))  tags.push("pasta");
   if (anyHas(RICE_KW))   tags.push("rice");
@@ -42,7 +40,6 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   return tags;
 }
 
-// Cleans up OG titles like "Chicken Tikka | BBC Good Food" or "user on Instagram: ..."
 function cleanTitle(raw: string): string {
   return raw
     .replace(/\s+on Instagram:.*$/i, "")
@@ -64,8 +61,9 @@ export default function CreateRecipe() {
   const [errorMsg, setErrorMsg] = useState("");
   const [fetchingMeta, setFetchingMeta] = useState(false);
   const [autoFilled, setAutoFilled] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [translated, setTranslated] = useState(false);
 
-  // Auto-classify whenever name or ingredients change
   useEffect(() => {
     if (name || ingredients) {
       setTags(classifyRecipe(name, ingredients));
@@ -84,10 +82,10 @@ export default function CreateRecipe() {
         if (data.title) {
           const cleaned = cleanTitle(data.title);
           if (cleaned && cleaned.length > 1) {
-            // Only auto-fill if name field is still empty
             setName(prev => {
               if (!prev) {
                 setAutoFilled(true);
+                setTranslated(false);
                 return cleaned;
               }
               return prev;
@@ -99,9 +97,30 @@ export default function CreateRecipe() {
     setFetchingMeta(false);
   }
 
+  async function handleTranslate() {
+    if (!name || translating) return;
+    setTranslating(true);
+    try {
+      const res = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: name }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.translated) {
+          setName(data.translated);
+          setTranslated(true);
+          setAutoFilled(false);
+        }
+      }
+    } catch {}
+    setTranslating(false);
+  }
+
   function reset() {
     setName(""); setStory(""); setIngredients(""); setSourceUrl("");
-    setTags([]); setAutoFilled(false);
+    setTags([]); setAutoFilled(false); setTranslated(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -146,7 +165,7 @@ export default function CreateRecipe() {
       style={{ borderColor: "var(--mk-border)", background: "white" }}>
       <p className="text-sm font-bold mb-3" style={{ color: "#1a1a1a" }}>Add a recipe</p>
 
-      {/* URL field first — paste triggers metadata fetch */}
+      {/* URL field */}
       <div className="relative mb-2">
         <input
           type="url"
@@ -156,45 +175,59 @@ export default function CreateRecipe() {
           onPaste={e => {
             const pasted = e.clipboardData.getData("text");
             if (pasted.startsWith("http")) {
-              // Small delay so the state update lands first
               setTimeout(() => fetchMetaFromUrl(pasted), 80);
             }
           }}
           onBlur={e => {
             const val = e.target.value;
-            if (val.startsWith("http") && !name) {
-              fetchMetaFromUrl(val);
-            }
+            if (val.startsWith("http") && !name) fetchMetaFromUrl(val);
           }}
           className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none"
           style={{ borderColor: "var(--mk-border)" }}
         />
         {fetchingMeta && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px]"
-            style={{ color: "#aaa" }}>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px]" style={{ color: "#aaa" }}>
             Fetching…
           </span>
         )}
       </div>
 
-      {/* Name field — auto-filled badge shown if we populated it */}
-      <div className="relative mb-2">
+      {/* Name field + translate button */}
+      <div className="relative mb-1">
         <input
           type="text"
           required
           placeholder="Recipe name *"
           value={name}
-          onChange={e => { setName(e.target.value); setAutoFilled(false); }}
-          className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none"
-          style={{ borderColor: autoFilled ? "#1B5E2E" : "var(--mk-border)" }}
+          onChange={e => { setName(e.target.value); setAutoFilled(false); setTranslated(false); }}
+          className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none pr-24"
+          style={{ borderColor: translated ? "#D4A017" : autoFilled ? "#1B5E2E" : "var(--mk-border)" }}
         />
-        {autoFilled && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold"
-            style={{ color: "#1B5E2E" }}>
+        {translated ? (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#D4A017" }}>
+            ✓ translated
+          </span>
+        ) : autoFilled ? (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold" style={{ color: "#1B5E2E" }}>
             ✓ auto-filled
           </span>
-        )}
+        ) : null}
       </div>
+
+      {/* Translate button — shown when name is filled and not yet translated */}
+      {name && !translated && (
+        <div className="mb-2">
+          <button
+            type="button"
+            onClick={handleTranslate}
+            disabled={translating}
+            className="text-[11px] font-semibold px-3 py-1 rounded-full"
+            style={{ background: "rgba(212,160,23,0.12)", color: "#D4A017", border: "1px solid rgba(212,160,23,0.3)" }}
+          >
+            {translating ? "Translating…" : "🌐 Translate to English"}
+          </button>
+        </div>
+      )}
 
       <textarea
         placeholder="Ingredients (optional)"
@@ -214,7 +247,6 @@ export default function CreateRecipe() {
         style={{ borderColor: "var(--mk-border)" }}
       />
 
-      {/* Category preview */}
       {tags.length > 0 && (
         <div className="mb-3">
           <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "#aaa" }}>
@@ -222,15 +254,12 @@ export default function CreateRecipe() {
           </p>
           <div className="flex flex-wrap gap-1.5">
             {tags.map((tag, i) => (
-              <span
-                key={tag}
-                className="text-[10px] px-2 py-0.5 rounded-full"
+              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full"
                 style={{
                   background: i === 0 ? "rgba(27,94,46,0.15)" : "rgba(27,94,46,0.07)",
                   color: "#1B5E2E",
                   fontWeight: i === 0 ? 700 : 500,
-                }}
-              >
+                }}>
                 {tag}
               </span>
             ))}
