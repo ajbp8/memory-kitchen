@@ -1,7 +1,12 @@
+export const runtime = "edge";
+
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-export const runtime = "edge";
+function randomPassword() {
+  return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2).toUpperCase() + "!9";
+}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -10,22 +15,18 @@ export async function POST(request: Request) {
 
   const admin = createAdminClient();
 
-  // Check user exists
+  // Find user
   const { data: { users } } = await admin.auth.admin.listUsers({ perPage: 1000 });
   const found = users.find(u => u.email?.toLowerCase() === email);
-  if (!found) return NextResponse.json({ error: "No account found for that email. Check your invite link." }, { status: 400 });
+  if (!found) return NextResponse.json({ error: "No account found for that email. Ask Adrien for an invite link." }, { status: 400 });
 
-  // Generate instant magic link — no email sent
-  const origin = new URL(request.url).origin;
-  const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
-    type: "magiclink",
-    email,
-    options: { redirectTo: `${origin}/auth/callback` },
-  });
+  // Reset password + sign in directly
+  const tempPass = randomPassword();
+  await admin.auth.admin.updateUserById(found.id, { password: tempPass });
 
-  if (linkErr || !linkData?.properties?.action_link) {
-    return NextResponse.json({ error: "Couldn't generate login link." }, { status: 500 });
-  }
+  const supabase = await createClient();
+  const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password: tempPass });
+  if (signInErr) return NextResponse.json({ error: `Sign-in failed: ${signInErr.message}` }, { status: 500 });
 
-  return NextResponse.json({ action_link: linkData.properties.action_link });
+  return NextResponse.json({ ok: true });
 }

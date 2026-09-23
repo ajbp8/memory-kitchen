@@ -30,8 +30,7 @@ export default function SignupPage() {
       return;
     }
 
-    // Redirect to Supabase magic link — logs user in instantly, no email needed
-    window.location.assign(data.action_link);
+    window.location.href = '/'; // session cookies set by API
   }
 
   return (

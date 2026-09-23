@@ -28,8 +28,7 @@ export default function LoginPage() {
       return;
     }
 
-    // Instant login — no email, no code
-    window.location.assign(data.action_link);
+    window.location.href = '/'; // session cookies set by API
   }
 
   return (
