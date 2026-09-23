@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
     type: "magiclink",
     email: emailLC,
-    options: { redirectTo: `${origin}/` },
+    options: { redirectTo: `${origin}/auth/callback` },
   });
   if (linkErr || !linkData?.properties?.action_link) {
     return NextResponse.json({ error: "Couldn't generate login link." }, { status: 500 });

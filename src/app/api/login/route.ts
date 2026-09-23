@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
     type: "magiclink",
     email,
-    options: { redirectTo: `${origin}/` },
+    options: { redirectTo: `${origin}/auth/callback` },
   });
 
   if (linkErr || !linkData?.properties?.action_link) {
