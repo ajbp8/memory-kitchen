@@ -18,9 +18,11 @@ export async function POST(req: Request) {
   const admin = createAdminClient();
 
   // 1. Upsert into public.users (admin bypasses RLS — always succeeds)
-  if (name) {
-    await admin.from("users").upsert({ id: user.id, name }, { onConflict: "id" });
-  }
+  // Always upsert with email (NOT NULL in users table)
+  await admin.from("users").upsert(
+    { id: user.id, name: name ?? user.email ?? "", email: user.email ?? "" },
+    { onConflict: "id" }
+  );
 
   // 2. Find default family and add user
   const { data: membership } = await admin
