@@ -1,6 +1,6 @@
 // Minimal service worker — caches the app shell for offline launch.
 // Deliberately simple for Session 1; richer offline/recipe caching is later work.
-const CACHE_NAME = "memory-kitchen-v4";
+const CACHE_NAME = "memory-kitchen-v5";
 const APP_SHELL = ["/manifest.json"];
 
 self.addEventListener("install", (event) => {
