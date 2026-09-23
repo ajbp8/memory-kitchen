@@ -642,8 +642,8 @@ export default function WeekMenu({
               </div>
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-4">
-              {mainDishes.length > 0 ? (
-                <div className="space-y-2 mb-2">
+              {(mainDishes.length + sideDishes.length) > 0 ? (
+                <div className="space-y-2 mb-4">
                   {mainDishes.map(d => (
                     <div key={d.id} className="flex items-center gap-3 rounded-xl border px-3 py-2.5"
                       style={{ borderColor: "var(--mk-border)", background: "var(--mk-cream)" }}>
@@ -651,11 +651,11 @@ export default function WeekMenu({
                       <div className="flex-1 min-w-0">
                         {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`} onClick={() => setSelectedDay(null)}
-                            className="text-sm font-semibold truncate block underline-offset-2 hover:underline" style={{ color: "#1a1a1a" }}>
+                            className="text-sm font-bold truncate block underline-offset-2 hover:underline" style={{ color: "#1a1a1a" }}>
                             {d.recipes?.name ?? d.free_text ?? "Recipe"}
                           </Link>
                         ) : (
-                          <p className="text-sm font-semibold truncate" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Dish"}</p>
+                          <p className="text-sm font-bold truncate" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Dish"}</p>
                         )}
                         {d.recipes?.cuisine_tags?.[0] && (
                           <p className="text-[10px] capitalize text-neutral-400">{d.recipes.cuisine_tags[0]}</p>
@@ -665,71 +665,65 @@ export default function WeekMenu({
                         className="text-neutral-300 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
                     </div>
                   ))}
+                  {sideDishes.map(d => (
+                    <div key={d.id} className="flex items-center gap-3 rounded-xl border px-3 py-2.5"
+                      style={{ borderColor: "var(--mk-border)", background: "white" }}>
+                      <span className="text-base flex-shrink-0">{d.recipes ? getEmoji(d.recipes as Recipe) : "🥗"}</span>
+                      <div className="flex-1 min-w-0">
+                        {d.recipe_id ? (
+                          <Link href={`/recipes/${d.recipe_id}`} onClick={() => setSelectedDay(null)}
+                            className="text-sm font-normal truncate block underline-offset-2 hover:underline" style={{ color: "#555" }}>
+                            {d.recipes?.name ?? d.free_text ?? "Side"}
+                          </Link>
+                        ) : (
+                          <p className="text-sm font-normal truncate" style={{ color: "#555" }}>{d.free_text ?? "Side"}</p>
+                        )}
+                        <p className="text-[10px] text-neutral-400">side</p>
+                      </div>
+                      <button onClick={() => removeDish(d.id)}
+                        className="text-neutral-300 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
+                    </div>
+                  ))}
                 </div>
               ) : (
-                <p className="text-xs text-neutral-400 text-center py-2 mb-2">No {selectedTab?.label.toLowerCase() ?? selectedMealTab} planned yet</p>
+                <p className="text-xs text-neutral-400 text-center py-2 mb-4">No {selectedTab?.label.toLowerCase() ?? selectedMealTab} planned yet</p>
               )}
-              {/* ── Main course ── */}
+              {/* ── Unified recipe picker: all recipes, [Main] [Side] buttons ── */}
               <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "#aaa" }}>
-                Main — {selectedTab?.label}
+                Add to {selectedTab?.label}
               </p>
               <input type="text" value={daySearch} onChange={e => setDaySearch(e.target.value)}
                 placeholder="Search recipes…" className="w-full rounded-xl px-3 py-2.5 text-sm border outline-none mb-3"
                 style={{ borderColor: "var(--mk-border)", background: "white" }} />
-              <div className="space-y-1.5 mb-5">
-                {daySearchResults.filter(r => !r.cuisine_tags?.includes("sides")).map(r => {
-                  const alreadyMain = mainDishes.some(d => d.recipe_id === r.id);
+              <div className="space-y-1.5">
+                {daySearchResults.map(r => {
+                  const asMain = mainDishes.some(d => d.recipe_id === r.id);
+                  const asSide = sideDishes.some(d => d.recipe_id === r.id);
                   return (
-                    <button key={r.id} onClick={() => !alreadyMain && !mutating && addDish(selectedDay, selectedMealTab, r)} disabled={mutating && alreadyMain}
-                      className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 border text-left transition-colors"
-                      style={{ borderColor: "var(--mk-border)", background: alreadyMain ? "rgba(212,160,23,0.06)" : "white", opacity: alreadyMain ? 0.6 : 1 }}>
+                    <div key={r.id} className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 border"
+                      style={{ borderColor: "var(--mk-border)", background: "white" }}>
                       <span className="text-base flex-shrink-0">{getEmoji(r)}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize text-neutral-400">{r.cuisine_tags[0]}</p>}
                       </div>
-                      <span className="text-xs font-bold flex-shrink-0" style={{ color: alreadyMain ? "#bbb" : "var(--mk-terracotta)" }}>
-                        {alreadyMain ? "✓ Added" : "+ Add"}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* ── Sides ── */}
-              {sideDishes.length > 0 && (
-                <div className="space-y-2 mb-3">
-                  {sideDishes.map(d => (
-                    <div key={d.id} className="flex items-center gap-2.5 rounded-xl px-3 py-2 border"
-                      style={{ borderColor: "var(--mk-border)", background: "rgba(6,81,48,0.04)" }}>
-                      <span className="text-base flex-shrink-0">{d.recipes ? getEmoji(d.recipes as Recipe) : "🥗"}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{d.recipes?.name ?? d.free_text ?? "Side"}</p>
-                        <p className="text-[10px] text-neutral-400">side</p>
+                      <div className="flex gap-1.5 flex-shrink-0">
+                        <button
+                          disabled={mutating || asMain}
+                          onClick={() => !asMain && !mutating && addDish(selectedDay, selectedMealTab, r)}
+                          className="text-[11px] font-bold px-2 py-1 rounded-lg transition-opacity disabled:opacity-40"
+                          style={{ background: asMain ? "rgba(212,160,23,0.15)" : "var(--mk-terracotta)", color: asMain ? "var(--mk-terracotta)" : "white" }}>
+                          {asMain ? "✓" : "Main"}
+                        </button>
+                        <button
+                          disabled={mutating || asSide}
+                          onClick={() => !asSide && !mutating && addDish(selectedDay, selectedMealTab + "-side", r)}
+                          className="text-[11px] font-bold px-2 py-1 rounded-lg transition-opacity disabled:opacity-40"
+                          style={{ background: asSide ? "rgba(6,81,48,0.12)" : "rgba(6,81,48,0.1)", color: asSide ? "#065130" : "#065130" }}>
+                          {asSide ? "✓" : "Side"}
+                        </button>
                       </div>
-                      <button onClick={() => removeDish(d.id)} className="text-neutral-300 hover:text-red-400 text-xl leading-none" aria-label="Remove">×</button>
                     </div>
-                  ))}
-                </div>
-              )}
-              <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "#aaa" }}>
-                Sides
-              </p>
-              <div className="space-y-1.5">
-                {recipes.filter(r => r.cuisine_tags?.includes("sides")).map(r => {
-                  const alreadySide = sideDishes.some(d => d.recipe_id === r.id);
-                  return (
-                    <button key={r.id} onClick={() => !alreadySide && !mutating && addDish(selectedDay, selectedMealTab + "-side", r)} disabled={mutating && alreadySide}
-                      className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 border text-left transition-colors"
-                      style={{ borderColor: "rgba(6,81,48,0.2)", background: alreadySide ? "rgba(6,81,48,0.06)" : "white", opacity: alreadySide ? 0.6 : 1 }}>
-                      <span className="text-base flex-shrink-0">🥗</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
-                      </div>
-                      <span className="text-xs font-bold flex-shrink-0" style={{ color: alreadySide ? "#bbb" : "#065130" }}>
-                        {alreadySide ? "✓ Added" : "+ Add"}
-                      </span>
-                    </button>
                   );
                 })}
               </div>

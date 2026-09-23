@@ -16,7 +16,7 @@ const SALAD_KW   = new Set(["salad"]);
 const VEGETARIAN_KW = new Set(["vegetarian","vegan","tofu","tempeh","lentil","lentils","chickpea","chickpeas","bean","beans","veggie","vegetable","vegetables"]);
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ALL_TAGS = ["sides","meat","poultry","seafood","vegetarian","vegan","pasta","rice","soup","curry","salad","dessert","baking","breakfast","snack","sauce"];
+const ALL_TAGS = ["meat","poultry","seafood","vegetarian","vegan","pasta","rice","soup","curry","salad","dessert","baking","breakfast","snack","sauce"];
 
 function classifyRecipe(name: string, ingredients: string): string[] {
   const nameText = name.toLowerCase();
