@@ -15,7 +15,8 @@ export default function InviteLink() {
   function handleWhatsApp() {
     const link = window.location.origin + "/signup";
     const text = encodeURIComponent(
-      `Join me on Memory Kitchen — create weekly menus & share recipes you love! 🍑🎉\n${link}`
+      `Join me on Memory Kitchen!
+${link}`
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   }
