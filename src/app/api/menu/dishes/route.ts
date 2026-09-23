@@ -3,7 +3,7 @@ export const runtime = "edge";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-const MEAL_TYPES = ["breakfast", "lunch", "dinner", "sides"];
+const MEAL_TYPES = ["breakfast", "lunch", "dinner"];
 
 function mondayOf(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00Z");

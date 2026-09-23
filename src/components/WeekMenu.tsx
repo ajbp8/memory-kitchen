@@ -29,7 +29,6 @@ const CUISINE_EMOJI: Record<string, string> = {
 };
 const MEAL_TABS = [
   { key: "dinner",    label: "Dinner",    icon: "🍽️" },
-  { key: "sides",     label: "Sides",     icon: "🥗" },
   { key: "lunch",     label: "Lunch",     icon: "☀️" },
   { key: "breakfast", label: "Breakfast", icon: "🌅" },
 ];
@@ -445,11 +444,10 @@ export default function WeekMenu({
             </div>
           ))
         ) : weekDays.map((day, i) => {
-          const dinnerDishes = getDayDishes(day, "dinner");
-          const sidesDishes  = getDayDishes(day, "sides");
+          const dinnerDishes = [...getDayDishes(day, "dinner"), ...getDayDishes(day, "sides")]; // sides fold into dinner
           const lunchDishes  = getDayDishes(day, "lunch");
           const bfDishes     = getDayDishes(day, "breakfast");
-          const anyDishes    = dinnerDishes.length + sidesDishes.length + lunchDishes.length + bfDishes.length > 0;
+          const anyDishes    = dinnerDishes.length + lunchDishes.length + bfDishes.length > 0;
           const isToday = day === todayStr;
           const isPast  = day < todayStr;
           const isDragTarget = dragOver === day && !isPast;
@@ -501,7 +499,6 @@ export default function WeekMenu({
                       // Count how many meal types have dishes
                       const mealGroups = [
                         { key: "dinner",    label: "DINNER",    dishes: dinnerDishes },
-                        { key: "sides",     label: "SIDES",     dishes: sidesDishes },
                         { key: "lunch",     label: "LUNCH",     dishes: lunchDishes },
                         { key: "breakfast", label: "BREAKFAST", dishes: bfDishes },
                       ].filter(g => g.dishes.length > 0);
