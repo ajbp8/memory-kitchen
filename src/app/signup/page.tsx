@@ -60,14 +60,13 @@ export default function SignupPage() {
       return;
     }
 
-    // Save name to users table + auto-join the default household
+    // Server-side: save name + join household (admin client bypasses RLS)
     if (data.user) {
-      await supabase.from("users").upsert({
-        id: data.user.id,
-        name: `${firstName} ${lastName}`.trim(),
+      await fetch("/api/auto-join-family", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: `${firstName} ${lastName}`.trim() }),
       });
-      // Non-blocking — if this fails the user still gets in
-      fetch("/api/auto-join-family", { method: "POST" }).catch(() => {});
     }
 
     window.location.assign("/");
