@@ -1,38 +1,31 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
-// Magic-link sign-in for EXISTING users only. shouldCreateUser:false
-// means this can never be used to create a new account — that only
-// happens through /api/join after a valid invite token is checked.
+export const runtime = "edge";
+
 export async function POST(request: Request) {
-    const { email } = await request.json();
-    if (!email) {
-          return NextResponse.json({ error: "Email is required." }, { status: 400 });
-    }
+  const body = await request.json().catch(() => null);
+  const email = body?.email?.trim().toLowerCase();
+  if (!email) return NextResponse.json({ error: "Email required." }, { status: 400 });
 
-  const supabase = await createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: { shouldCreateUser: false },
-    });
+  const admin = createAdminClient();
 
-  if (error) {
-        // Rate limit hit — Supabase caps at 2 OTP emails/hour on free tier
-      if (
-              error.status === 429 ||
-              error.message?.toLowerCase().includes("rate limit") ||
-              error.message?.toLowerCase().includes("email rate")
-            ) {
-              return NextResponse.json(
-                { error: "Too many sign-in attempts. Please wait a few minutes and try again." },
-                { status: 429 }
-                      );
-      }
-        return NextResponse.json(
-          { error: "No account found for that email. New here? Create an account at /signup." },
-          { status: 400 }
-              );
+  // Check user exists
+  const { data: { users } } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  const found = users.find(u => u.email?.toLowerCase() === email);
+  if (!found) return NextResponse.json({ error: "No account found for that email. Check your invite link." }, { status: 400 });
+
+  // Generate instant magic link — no email sent
+  const origin = new URL(request.url).origin;
+  const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
+    type: "magiclink",
+    email,
+    options: { redirectTo: `${origin}/` },
+  });
+
+  if (linkErr || !linkData?.properties?.action_link) {
+    return NextResponse.json({ error: "Couldn't generate login link." }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ action_link: linkData.properties.action_link });
 }
