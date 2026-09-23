@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { NextResponse } from "next/server";
 
 const SYSTEM_PROMPT = `You are Nestor, a warm and practical family recipe assistant.
