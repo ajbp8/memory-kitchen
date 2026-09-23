@@ -125,6 +125,7 @@ export default function WeekMenu({
   const [weekOffset, setWeekOffset] = useState(0);
   const [weekData, setWeekData] = useState<WeekData>(initialWeekData);
   const [loading, setLoading] = useState(false);
+  const [mutating, setMutating] = useState(false);
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -192,30 +193,72 @@ export default function WeekMenu({
   }, [weekStart]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function addDish(day: string, meal: string, recipe: Recipe) {
+    if (mutating) return;
+    // Close modals immediately
     setPendingRecipe(null);
     setSearch(""); setSearchOpen(false); setActiveFilters([]);
     setDragOver(null); setDaySearch("");
-    await fetch("/api/menu/dishes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ week_start: weekStart, day_date: day, meal_type: meal, recipe_id: recipe.id }),
+    // Optimistic update — add to UI right away
+    const tempId = `temp-${Date.now()}`;
+    setWeekData(prev => {
+      const slots = [...prev.slots];
+      const existingIdx = slots.findIndex(s => s.day_date === day && s.meal_type === meal);
+      const newDish = { id: tempId, recipe_id: recipe.id, free_text: null, recipes: { name: recipe.name, cuisine_tags: recipe.cuisine_tags ?? [] } };
+      if (existingIdx >= 0) {
+        const updated = [...slots];
+        updated[existingIdx] = { ...slots[existingIdx], dishes: [...slots[existingIdx].dishes, newDish] };
+        return { ...prev, slots: updated };
+      }
+      return { ...prev, slots: [...slots, { id: tempId + "-slot", day_date: day, meal_type: meal, dishes: [newDish] }] };
     });
-    fetchWeek();
+    setMutating(true);
+    try {
+      await fetch("/api/menu/dishes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ week_start: weekStart, day_date: day, meal_type: meal, recipe_id: recipe.id }),
+      });
+    } finally {
+      setMutating(false);
+      fetchWeek(); // sync real IDs from server
+    }
   }
 
   async function addFreeDish(day: string, meal: string, text: string) {
+    if (mutating) return;
     setPendingFreeText(null);
-    await fetch("/api/menu/dishes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ week_start: weekStart, day_date: day, meal_type: meal, free_text: text }),
+    const tempId = `temp-${Date.now()}`;
+    setWeekData(prev => {
+      const slots = [...prev.slots];
+      const existingIdx = slots.findIndex(s => s.day_date === day && s.meal_type === meal);
+      const newDish = { id: tempId, recipe_id: null, free_text: text, recipes: null };
+      if (existingIdx >= 0) {
+        const updated = [...slots];
+        updated[existingIdx] = { ...slots[existingIdx], dishes: [...slots[existingIdx].dishes, newDish] };
+        return { ...prev, slots: updated };
+      }
+      return { ...prev, slots: [...slots, { id: tempId + "-slot", day_date: day, meal_type: meal, dishes: [newDish] }] };
     });
-    fetchWeek();
+    setMutating(true);
+    try {
+      await fetch("/api/menu/dishes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ week_start: weekStart, day_date: day, meal_type: meal, free_text: text }),
+      });
+    } finally {
+      setMutating(false);
+      fetchWeek();
+    }
   }
 
   async function removeDish(id: string) {
-    await fetch(`/api/menu/dishes/${id}`, { method: "DELETE" });
-    fetchWeek();
+    // Optimistic remove
+    setWeekData(prev => ({
+      ...prev,
+      slots: prev.slots.map(s => ({ ...s, dishes: s.dishes.filter(d => d.id !== id) }))
+    }));
+    fetch(`/api/menu/dishes/${id}`, { method: "DELETE" }).then(() => fetchWeek());
   }
 
   async function askNestor() {
@@ -638,7 +681,7 @@ export default function WeekMenu({
                 {daySearchResults.map(r => {
                   const alreadyAdded = getDayDishes(selectedDay, selectedMealTab).some(d => d.recipe_id === r.id);
                   return (
-                    <button key={r.id} onClick={() => !alreadyAdded && addDish(selectedDay, selectedMealTab, r)}
+                    <button key={r.id} onClick={() => !alreadyAdded && !mutating && addDish(selectedDay, selectedMealTab, r)} disabled={mutating && !alreadyAdded}
                       className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 border text-left transition-colors"
                       style={{ borderColor: "var(--mk-border)", background: alreadyAdded ? "rgba(212,160,23,0.06)" : "white", opacity: alreadyAdded ? 0.6 : 1 }}>
                       <span className="text-base flex-shrink-0">{getEmoji(r)}</span>
