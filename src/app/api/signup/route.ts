@@ -36,9 +36,10 @@ export async function POST(request: Request) {
         { status: 429 }
       );
     }
-    console.error("[signup] Supabase OTP error:", error.message, error.status, error.code);
+    const errDetail = JSON.stringify({ message: error.message, status: error.status, code: error.code, cause: (error as any).cause });
+    console.error("[signup] Supabase OTP error:", errDetail);
     return NextResponse.json(
-      { error: `Couldn't send a verification code: ${error.message}` },
+      { error: `Couldn't send a verification code: ${errDetail}` },
       { status: 400 }
     );
   }
