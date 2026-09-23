@@ -444,9 +444,9 @@ export default function WeekMenu({
             </div>
           ))
         ) : weekDays.map((day, i) => {
-          const dinnerDishes = [...getDayDishes(day, "dinner"), ...getDayDishes(day, "sides")]; // sides fold into dinner
-          const lunchDishes  = getDayDishes(day, "lunch");
-          const bfDishes     = getDayDishes(day, "breakfast");
+          const dinnerDishes = [...getDayDishes(day, "dinner"), ...getDayDishes(day, "dinner-side")];
+          const lunchDishes  = [...getDayDishes(day, "lunch"),  ...getDayDishes(day, "lunch-side")];
+          const bfDishes     = [...getDayDishes(day, "breakfast"), ...getDayDishes(day, "breakfast-side")];
           const anyDishes    = dinnerDishes.length + lunchDishes.length + bfDishes.length > 0;
           const isToday = day === todayStr;
           const isPast  = day < todayStr;
@@ -638,7 +638,8 @@ export default function WeekMenu({
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-4">
               {(() => {
-                const dishes = getDayDishes(selectedDay, selectedMealTab);
+                const mainDishes = getDayDishes(selectedDay, selectedMealTab);
+                const sideDishes = getDayDishes(selectedDay, selectedMealTab + "-side");
                 const tab = MEAL_TABS.find(t => t.key === selectedMealTab);
                 return dishes.length > 0 ? (
                   <div className="space-y-2 mb-5">
@@ -665,29 +666,68 @@ export default function WeekMenu({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-neutral-400 text-center py-2 mb-4">No {tab?.label.toLowerCase() ?? selectedMealTab} planned yet</p>
+                  <p className="text-xs text-neutral-400 text-center py-2 mb-2">No {tab?.label.toLowerCase() ?? selectedMealTab} planned yet</p>
                 );
               })()}
+              {/* ── Main course ── */}
               <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "#aaa" }}>
-                Add to {MEAL_TABS.find(t => t.key === selectedMealTab)?.label}
+                Main — {MEAL_TABS.find(t => t.key === selectedMealTab)?.label}
               </p>
               <input type="text" value={daySearch} onChange={e => setDaySearch(e.target.value)}
                 placeholder="Search recipes…" className="w-full rounded-xl px-3 py-2.5 text-sm border outline-none mb-3"
                 style={{ borderColor: "var(--mk-border)", background: "white" }} />
-              <div className="space-y-1.5">
-                {daySearchResults.map(r => {
-                  const alreadyAdded = getDayDishes(selectedDay, selectedMealTab).some(d => d.recipe_id === r.id);
+              <div className="space-y-1.5 mb-5">
+                {daySearchResults.filter(r => !r.cuisine_tags?.includes("sides")).map(r => {
+                  const alreadyMain = mainDishes.some(d => d.recipe_id === r.id);
                   return (
-                    <button key={r.id} onClick={() => !alreadyAdded && !mutating && addDish(selectedDay, selectedMealTab, r)} disabled={mutating && !alreadyAdded}
+                    <button key={r.id} onClick={() => !alreadyMain && !mutating && addDish(selectedDay, selectedMealTab, r)} disabled={mutating && alreadyMain}
                       className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 border text-left transition-colors"
-                      style={{ borderColor: "var(--mk-border)", background: alreadyAdded ? "rgba(212,160,23,0.06)" : "white", opacity: alreadyAdded ? 0.6 : 1 }}>
+                      style={{ borderColor: "var(--mk-border)", background: alreadyMain ? "rgba(212,160,23,0.06)" : "white", opacity: alreadyMain ? 0.6 : 1 }}>
                       <span className="text-base flex-shrink-0">{getEmoji(r)}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize text-neutral-400">{r.cuisine_tags[0]}</p>}
                       </div>
-                      <span className="text-xs font-bold flex-shrink-0" style={{ color: alreadyAdded ? "#bbb" : "var(--mk-terracotta)" }}>
-                        {alreadyAdded ? "✓ Added" : "+ Add"}
+                      <span className="text-xs font-bold flex-shrink-0" style={{ color: alreadyMain ? "#bbb" : "var(--mk-terracotta)" }}>
+                        {alreadyMain ? "✓ Added" : "+ Add"}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* ── Sides ── */}
+              {sideDishes.length > 0 && (
+                <div className="space-y-2 mb-3">
+                  {sideDishes.map(d => (
+                    <div key={d.id} className="flex items-center gap-2.5 rounded-xl px-3 py-2 border"
+                      style={{ borderColor: "var(--mk-border)", background: "rgba(6,81,48,0.04)" }}>
+                      <span className="text-base flex-shrink-0">{d.recipes ? getEmoji(d.recipes as Recipe) : "🥗"}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{d.recipes?.name ?? d.free_text ?? "Side"}</p>
+                        <p className="text-[10px] text-neutral-400">side</p>
+                      </div>
+                      <button onClick={() => removeDish(d.id)} className="text-neutral-300 hover:text-red-400 text-xl leading-none" aria-label="Remove">×</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "#aaa" }}>
+                Sides
+              </p>
+              <div className="space-y-1.5">
+                {recipes.filter(r => r.cuisine_tags?.includes("sides")).map(r => {
+                  const alreadySide = sideDishes.some(d => d.recipe_id === r.id);
+                  return (
+                    <button key={r.id} onClick={() => !alreadySide && !mutating && addDish(selectedDay, selectedMealTab + "-side", r)} disabled={mutating && alreadySide}
+                      className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 border text-left transition-colors"
+                      style={{ borderColor: "rgba(6,81,48,0.2)", background: alreadySide ? "rgba(6,81,48,0.06)" : "white", opacity: alreadySide ? 0.6 : 1 }}>
+                      <span className="text-base flex-shrink-0">🥗</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
+                      </div>
+                      <span className="text-xs font-bold flex-shrink-0" style={{ color: alreadySide ? "#bbb" : "#065130" }}>
+                        {alreadySide ? "✓ Added" : "+ Add"}
                       </span>
                     </button>
                   );
