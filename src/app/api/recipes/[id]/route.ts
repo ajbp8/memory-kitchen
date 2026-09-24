@@ -3,6 +3,8 @@ export const runtime = "edge";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
+const ADMIN_ID = "c3342872-a9e3-4097-a75d-b67aefa8dead";
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -39,11 +41,10 @@ export async function PATCH(
     return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
   }
 
-  const { error } = await supabase
-    .from("recipes")
-    .update(update)
-    .eq("id", id)
-    .eq("owner_id", user.id); // belt-and-suspenders: RLS + explicit owner check
+  const isAdmin = user.id === ADMIN_ID;
+  let updateQuery = supabase.from("recipes").update(update).eq("id", id);
+  if (!isAdmin) updateQuery = updateQuery.eq("owner_id", user.id);
+  const { error } = await updateQuery;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -61,11 +62,10 @@ export async function DELETE(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { error } = await supabase
-    .from("recipes")
-    .delete()
-    .eq("id", id)
-    .eq("owner_id", user.id); // only owner can delete
+  const isAdmin = user.id === ADMIN_ID;
+  let deleteQuery = supabase.from("recipes").delete().eq("id", id);
+  if (!isAdmin) deleteQuery = deleteQuery.eq("owner_id", user.id);
+  const { error } = await deleteQuery;
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });
