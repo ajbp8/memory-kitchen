@@ -14,9 +14,10 @@ const SOUP_KW    = new Set(["soup","stew","broth","chowder","bisque","gazpacho",
 const CURRY_KW   = new Set(["curry","dhal","dal","tikka","masala","korma","tagine"]);
 const SALAD_KW   = new Set(["salad"]);
 const VEGETARIAN_KW = new Set(["vegetarian","vegan","tofu","tempeh","lentil","lentils","chickpea","chickpeas","bean","beans","veggie","vegetable","vegetables"]);
+const ASIAN_KW   = new Set(["asian","chinese","japanese","thai","vietnamese","korean","sushi","dim sum","stir fry","wok","miso","teriyaki","soy","ramen","udon","soba","dumplings","kimchi","pho","banh mi","bulgogi","bibimbap"]);
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ALL_TAGS = ["meat","poultry","seafood","vegetarian","vegan","pasta","rice","soup","curry","salad","dessert","baking","breakfast","snack","sauce"];
+const ALL_TAGS = ["meat & poultry","seafood","vegetarian","pasta & noodles","rice","soup","salad","dessert","breakfast","snack","sauce","asian"];
 
 function classifyRecipe(name: string, ingredients: string): string[] {
   const nameText = name.toLowerCase();
@@ -29,18 +30,17 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   const tags: string[] = [];
 
   // Primary — only tag if there's an actual match; no default fallback
-  if      (anyHas(MEAT_KW))                                   tags.push("meat");
-  else if (anyHas(POULTRY_KW))                                tags.push("poultry");
+  if      (anyHas(MEAT_KW) || anyHas(POULTRY_KW))            tags.push("meat & poultry");
   else if (anyHas(SEAFOOD_KW))                                tags.push("seafood");
   else if (nameHas(DESSERT_NAME_KW) || anyHas(DESSERT_ING_KW)) tags.push("dessert");
   else if (anyHas(VEGETARIAN_KW))                             tags.push("vegetarian");
   // If nothing matched, leave primary empty — user can add manually
 
-  if (anyHas(PASTA_KW))  tags.push("pasta");
+  if (anyHas(PASTA_KW))  tags.push("pasta & noodles");
   if (anyHas(RICE_KW))   tags.push("rice");
   if (anyHas(SOUP_KW))   tags.push("soup");
-  if (anyHas(CURRY_KW))  tags.push("curry");
   if (anyHas(SALAD_KW))  tags.push("salad");
+  if (anyHas(ASIAN_KW))  tags.push("asian");
 
   return tags;
 }
