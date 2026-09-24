@@ -17,7 +17,13 @@ const VEGETARIAN_KW = new Set(["vegetarian","vegan","tofu","tempeh","lentil","le
 const ASIAN_KW   = new Set(["asian","chinese","japanese","thai","vietnamese","korean","sushi","dim sum","stir fry","wok","miso","teriyaki","soy","ramen","udon","soba","dumplings","kimchi","pho","banh mi","bulgogi","bibimbap"]);
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ALL_TAGS = ["meat & poultry","seafood","vegetarian","pasta & noodles","rice","soup","salad","dessert","breakfast","snack","sauce","asian"];
+const ALL_TAGS = ["meat & poultry","seafood","vegetarian","pasta & noodles","rice","soup","salad","dessert","breakfast","snack","sauce","asian","cheese","oven bakes"];
+const TAG_EMOJI: Record<string, string> = {
+  "meat & poultry": "🍗", seafood: "🐟", vegetarian: "🥦",
+  "pasta & noodles": "🍝", rice: "🍚", soup: "🍲", salad: "🥗",
+  dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙", asian: "🍜",
+  cheese: "🧀", "oven bakes": "🥘",
+};
 
 function classifyRecipe(name: string, ingredients: string): string[] {
   const nameText = name.toLowerCase();
@@ -64,7 +70,6 @@ export default function CreateRecipe() {
   const [ingredients, setIngredients] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [showTagPicker, setShowTagPicker] = useState(false);
   const [status, setStatus] = useState<"idle" | "working" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [fetchingMeta, setFetchingMeta] = useState(false);
@@ -135,7 +140,6 @@ export default function CreateRecipe() {
 
   function addTag(tag: string) {
     if (!tags.includes(tag)) setTags(prev => [...prev, tag]);
-    setShowTagPicker(false);
   }
 
   function reset() {
@@ -182,7 +186,6 @@ export default function CreateRecipe() {
     );
   }
 
-  const availableTags = ALL_TAGS.filter(t => !tags.includes(t));
 
   return (
     <form onSubmit={handleSubmit} className="rounded-xl border p-4"
@@ -252,43 +255,26 @@ export default function CreateRecipe() {
         className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none mb-3"
         style={{ borderColor: "var(--mk-border)" }} />
 
-      {/* Category tags — editable */}
+      {/* Tags — emoji pill chips matching EditRecipeForm */}
       <div className="mb-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "#aaa" }}>Category</p>
-        <div className="flex flex-wrap gap-1.5 items-center">
-          {tags.map((tag, i) => (
-            <span key={tag} className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full"
-              style={{
-                background: "rgba(6,81,48,0.15)",
-                color: "#065130", fontWeight: 700,
-              }}>
-              {tag}
-              <button type="button" onClick={() => removeTag(tag)}
-                className="ml-0.5 leading-none opacity-60 hover:opacity-100"
-                style={{ fontSize: 11 }}>✕</button>
-            </span>
-          ))}
-
-          {/* Add tag button */}
-          <div className="relative">
-            <button type="button" onClick={() => setShowTagPicker(v => !v)}
-              className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
-              style={{ background: "rgba(0,0,0,0.05)", color: "#888", border: "1px dashed #ccc" }}>
-              + add
-            </button>
-            {showTagPicker && availableTags.length > 0 && (
-              <div className="absolute left-0 top-7 z-50 rounded-xl border bg-white shadow-lg p-2 flex flex-wrap gap-1.5"
-                style={{ borderColor: "var(--mk-border)", minWidth: 200 }}>
-                {availableTags.map(tag => (
-                  <button key={tag} type="button" onClick={() => addTag(tag)}
-                    className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-                    style={{ background: "rgba(6,81,48,0.08)", color: "#065130" }}>
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+        <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--mk-terracotta)" }}>Tags</p>
+        <div className="flex flex-wrap gap-2">
+          {ALL_TAGS.map(tag => {
+            const active = tags.includes(tag);
+            return (
+              <button key={tag} type="button"
+                onClick={() => active ? removeTag(tag) : addTag(tag)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border capitalize transition-all"
+                style={active ? {
+                  background: "var(--mk-terracotta)", color: "white", borderColor: "var(--mk-terracotta)",
+                } : {
+                  background: "white", color: "var(--mk-terracotta)", borderColor: "var(--mk-border)",
+                }}>
+                <span>{TAG_EMOJI[tag] ?? "🏷️"}</span>
+                <span>{tag}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
