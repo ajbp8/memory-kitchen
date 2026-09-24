@@ -7,13 +7,13 @@ const ALL_TAGS = [
   "meat & poultry","seafood","vegetarian",
   "pasta & noodles","rice","soup","salad",
   "dessert","breakfast","snack","sauce","asian",
-  "cheese","oven bakes",
+  "cheese","oven bakes","eggs",
 ];
 
 const TAG_EMOJI: Record<string, string> = {
   "meat & poultry": "🍗", seafood: "🐟", vegetarian: "🥦",
   "pasta & noodles": "🍝", rice: "🍚", soup: "🍲", salad: "🥗",
-  dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙", asian: "🍜", cheese: "🧀", "oven bakes": "🥘",
+  dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙", asian: "🍜", cheese: "🧀", "oven bakes": "🥘", eggs: "🥚",
 };
 
 type Recipe = {
