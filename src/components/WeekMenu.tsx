@@ -14,7 +14,7 @@ const CUISINE_EMOJI: Record<string, string> = {
   // Primary classifier tags (matches RecipeCard CUISINE_STYLES)
   "meat & poultry": "🍗", meat: "🍗", poultry: "🍗", seafood: "🐟",
   vegetarian: "🥬", sides: "🥬", vegan: "🌱", dessert: "🍰",
-  baking: "🍞", breakfast: "🍳", snack: "🥨", sauce: "🫙", cheese: "🧀",
+  baking: "🍞", breakfast: "🍳", snack: "🥨", sauce: "🫙", cheese: "🧀", "oven bakes": "🥘",
   // Cuisine / style tags
   italian: "🍝", "pasta & noodles": "🍝", pasta: "🍝", mexican: "🌮", indian: "🍛",
   chinese: "🥡", japanese: "🍣", thai: "🍜", french: "🥐",
@@ -83,6 +83,10 @@ const CATEGORY_FILTERS = [
   {
     key: "cheese", label: "Cheese", emoji: "🧀",
     keywords: ["cheese","cheddar","mozzarella","parmesan","brie","camembert","gruyere","gouda","feta","ricotta","cheesy"],
+  },
+  {
+    key: "oven bakes", label: "Oven Bakes", emoji: "🥘",
+    keywords: ["oven bakes","bake","baked","casserole","traybake","tray bake","gratin","au gratin","roast","roasted","moussaka","shepherd's pie","cottage pie","pot pie","frittata","quiche"],
   },
   {
     key: "asian", label: "Asian", emoji: "🍜",
