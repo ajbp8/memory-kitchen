@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 
 const ALL_TAGS = [
   "meat & poultry","seafood","vegetarian",
-  "pasta","rice","soup","salad",
-  "dessert","breakfast","snack","sauce",
+  "pasta & noodles","rice","soup","salad",
+  "dessert","breakfast","snack","sauce","asian",
 ];
 
 const TAG_EMOJI: Record<string, string> = {
-  "meat & poultry": "🥩", seafood: "🐟", vegetarian: "🥦",
-  pasta: "🍝", rice: "🍚", soup: "🍲", salad: "🥗",
-  dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙",
+  "meat & poultry": "🍗", seafood: "🐟", vegetarian: "🥦",
+  "pasta & noodles": "🍝", rice: "🍚", soup: "🍲", salad: "🥗",
+  dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙", asian: "🍜",
 };
 
 type Recipe = {
