@@ -13,7 +13,7 @@ const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 const CUISINE_EMOJI: Record<string, string> = {
   // Primary classifier tags (matches RecipeCard CUISINE_STYLES)
   "meat & poultry": "🍗", meat: "🍗", poultry: "🍗", seafood: "🐟",
-  vegetarian: "🥬", sides: "🥬", vegan: "🌱", dessert: "🍰",
+  vegetarian: "🥬", vegan: "🌱", dessert: "🍰",
   baking: "🍞", breakfast: "🍳", snack: "🥨", sauce: "🫙", cheese: "🧀", "oven bakes": "🥘",
   // Cuisine / style tags
   italian: "🍝", "pasta & noodles": "🍝", pasta: "🍝", mexican: "🌮", indian: "🍛",
