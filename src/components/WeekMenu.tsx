@@ -762,7 +762,7 @@ export default function WeekMenu({
                       style={{ borderColor: "var(--mk-border)", background: "white" }}>
                       <span className="text-base flex-shrink-0">{getEmoji(r)}</span>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm truncate ${r.cuisine_tags?.some(t => SIDE_TAGS.has(t)) ? "font-normal text-neutral-500" : "font-semibold"}`}>{r.name}</p>
+                        <p className={"text-sm truncate font-semibold"}>{r.name}</p>
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize text-neutral-400">{r.cuisine_tags[0]}</p>}
                       </div>
                       <div className="flex gap-1.5 flex-shrink-0">
