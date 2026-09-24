@@ -12,7 +12,7 @@ const ALL_TAGS = [
 const TAG_EMOJI: Record<string, string> = {
   "meat & poultry": "🍗", seafood: "🐟", vegetarian: "🥦",
   "pasta & noodles": "🍝", rice: "🍚", soup: "🍲", salad: "🥗",
-  dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙", asian: "🍜",
+  dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙", asian: "🍜", cheese: "🧀",
 };
 
 type Recipe = {
