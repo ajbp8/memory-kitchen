@@ -17,6 +17,7 @@ const VEGETARIAN_KW = new Set(["vegetarian","vegan","tofu","tempeh","lentil","le
 const ASIAN_KW   = new Set(["asian","chinese","japanese","thai","vietnamese","korean","sushi","dim sum","stir fry","wok","miso","teriyaki","soy","ramen","udon","soba","dumplings","kimchi","pho","banh mi","bulgogi","bibimbap"]);
 const CHEESE_KW  = new Set(["cheese","cheddar","mozzarella","parmesan","brie","camembert","gruyere","gouda","feta","ricotta","cheesy","halloumi"]);
 const OVEN_KW    = new Set(["bake","baked","casserole","traybake","gratin","au gratin","roast","roasted","moussaka","frittata","quiche"]);
+const EGG_KW     = new Set(["egg","eggs","omelette","omelet","frittata","scrambled","poached","deviled eggs","egg white","egg yolk"]);
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ALL_TAGS = ["meat & poultry","seafood","vegetarian","pasta & noodles","rice","soup","salad","dessert","breakfast","snack","sauce","asian","cheese","oven bakes"];
@@ -24,7 +25,7 @@ const TAG_EMOJI: Record<string, string> = {
   "meat & poultry": "🍗", seafood: "🐟", vegetarian: "🥦",
   "pasta & noodles": "🍝", rice: "🍚", soup: "🍲", salad: "🥗",
   dessert: "🍰", breakfast: "🍳", snack: "🥨", sauce: "🫙", asian: "🍜",
-  cheese: "🧀", "oven bakes": "🥘",
+  cheese: "🧀", "oven bakes": "🥘", eggs: "🥚",
 };
 
 function classifyRecipe(name: string, ingredients: string): string[] {
@@ -51,6 +52,7 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   if (anyHas(ASIAN_KW))  tags.push("asian");
   if (anyHas(CHEESE_KW)) tags.push("cheese");
   if (anyHas(OVEN_KW))  tags.push("oven bakes");
+  if (anyHas(EGG_KW))   tags.push("eggs");
 
   return tags;
 }
