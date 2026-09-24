@@ -37,6 +37,7 @@ const CUISINE_STYLES: Record<string, { emoji: string; bg: string }> = {
   mediterranean: { emoji: "🥙", bg: "#3a7a7a" },
   american:    { emoji: "🍔", bg: "#c8602a" },
   asian:       { emoji: "🍜", bg: "#4a7a6a" },
+  cheese:      { emoji: "🧀", bg: "#c8a020" },
   beef:        { emoji: "🥩", bg: "#8a3a2a" },
   pork:        { emoji: "🥩", bg: "#9a4a3a" },
   chicken:     { emoji: "🍗", bg: "#c8802a" },
