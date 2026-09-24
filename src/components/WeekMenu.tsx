@@ -32,6 +32,7 @@ const MEAL_TABS = [
   { key: "lunch",     label: "Lunch",     icon: "☀️" },
   { key: "breakfast", label: "Breakfast", icon: "🌅" },
 ];
+const SIDE_TAGS = new Set(["sides", "rice", "salad", "sauce", "snack"]);
 
 // ─── Fixed primary category filter chips ─────────────────────────────────────
 const CATEGORY_FILTERS = [
@@ -552,12 +553,12 @@ export default function WeekMenu({
                               <span className="text-[11px] flex-shrink-0">{d.recipes ? getEmoji(d.recipes) : "🍽️"}</span>
                               {d.recipe_id ? (
                                 <Link href={`/recipes/${d.recipe_id}`}
-                                  className="text-sm font-semibold truncate flex-1 underline-offset-2 hover:underline"
-                                  style={{ color: "#1a1a1a" }}>
+                                  className={`text-sm truncate flex-1 underline-offset-2 hover:underline ${d.mealType?.includes("-side") ? "font-normal" : "font-semibold"}`}
+                                  style={{ color: d.mealType?.includes("-side") ? "#888" : "#1a1a1a" }}>
                                   {d.recipes?.name ?? d.free_text ?? "Dish"}
                                 </Link>
                               ) : (
-                                <span className="text-sm font-semibold truncate flex-1" style={{ color: "#1a1a1a" }}>{d.free_text ?? "Dish"}</span>
+                                <span className={`text-sm truncate flex-1 ${d.mealType?.includes("-side") ? "font-normal" : "font-semibold"}`} style={{ color: d.mealType?.includes("-side") ? "#888" : "#1a1a1a" }}>{d.free_text ?? "Dish"}</span>
                               )}
                               <button onClick={() => removeDish(d.id)}
                                 className="text-neutral-200 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors" aria-label="Remove">×</button>
@@ -749,7 +750,7 @@ export default function WeekMenu({
                       style={{ borderColor: "var(--mk-border)", background: "white" }}>
                       <span className="text-base flex-shrink-0">{getEmoji(r)}</span>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm truncate ${r.cuisine_tags?.includes("sides") ? "font-normal text-neutral-500" : "font-semibold"}`}>{r.name}</p>
+                        <p className={`text-sm truncate ${r.cuisine_tags?.some(t => SIDE_TAGS.has(t)) ? "font-normal text-neutral-500" : "font-semibold"}`}>{r.name}</p>
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize text-neutral-400">{r.cuisine_tags[0]}</p>}
                       </div>
                       <div className="flex gap-1.5 flex-shrink-0">
