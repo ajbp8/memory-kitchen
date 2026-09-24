@@ -101,12 +101,13 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
 
         {/* Cuisine tags */}
         {Array.isArray(recipe.cuisine_tags) && recipe.cuisine_tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {(recipe.cuisine_tags as string[]).map((tag: string) => (
               <span key={tag}
-                className="text-xs font-medium px-2.5 py-1 rounded-full capitalize"
-                style={{ background: "rgba(6,81,48,0.1)", color: "#065130" }}>
-                {tag}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border capitalize"
+                style={{ background: "white", color: "var(--mk-terracotta)", borderColor: "var(--mk-border)" }}>
+                <span>{CUISINE_EMOJI[tag.toLowerCase()] ?? "🏷️"}</span>
+                <span>{tag}</span>
               </span>
             ))}
           </div>
