@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import EditRecipeForm from "@/components/EditRecipeForm";
 
+const ADMIN_ID = "c3342872-a9e3-4097-a75d-b67aefa8dead";
+
 export default async function EditRecipePage({
   params,
 }: {
@@ -24,7 +26,7 @@ export default async function EditRecipePage({
 
   if (!recipe) notFound();
 
-  if (recipe.owner_id !== user.id) redirect(`/recipes/${id}`);
+  if (recipe.owner_id !== user!.id && user!.id !== ADMIN_ID) redirect(`/recipes/${id}`);
 
   return (
     <div className="min-h-screen" style={{ background: "var(--mk-cream)" }}>
