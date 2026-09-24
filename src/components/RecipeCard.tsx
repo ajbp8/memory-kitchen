@@ -12,10 +12,12 @@ export type RecipeCardData = {
 
 const CUISINE_STYLES: Record<string, { emoji: string; bg: string }> = {
   // Primary classifier tags
-  meat:        { emoji: "🥩", bg: "#8a3a2a" },
+  "meat & poultry": { emoji: "🍗", bg: "#8a3a2a" },
+  meat:        { emoji: "🍗", bg: "#8a3a2a" },
   poultry:     { emoji: "🍗", bg: "#c8802a" },
   seafood:     { emoji: "🐟", bg: "#3a7a9a" },
-  vegetarian:  { emoji: "🥗", bg: "#3a8a4a" },
+  vegetarian:  { emoji: "🥦", bg: "#3a8a4a" },
+  sides:       { emoji: "🥬", bg: "#4a8a5a" },
   vegan:       { emoji: "🌱", bg: "#4a9a4a" },
   dessert:     { emoji: "🍰", bg: "#b85a8a" },
   baking:      { emoji: "🍞", bg: "#c89050" },
@@ -25,6 +27,7 @@ const CUISINE_STYLES: Record<string, { emoji: string; bg: string }> = {
   // Cuisine / style tags
   italian:     { emoji: "🍝", bg: "#c8602a" },
   pasta:       { emoji: "🍝", bg: "#c8602a" },
+  "pasta & noodles": { emoji: "🍝", bg: "#c8602a" },
   mexican:     { emoji: "🌮", bg: "#b8482e" },
   indian:      { emoji: "🍛", bg: "#a8512a" },
   chinese:     { emoji: "🥡", bg: "#b8362e" },
