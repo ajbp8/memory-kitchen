@@ -15,6 +15,8 @@ const CURRY_KW   = new Set(["curry","dhal","dal","tikka","masala","korma","tagin
 const SALAD_KW   = new Set(["salad"]);
 const VEGETARIAN_KW = new Set(["vegetarian","vegan","tofu","tempeh","lentil","lentils","chickpea","chickpeas","bean","beans","veggie","vegetable","vegetables"]);
 const ASIAN_KW   = new Set(["asian","chinese","japanese","thai","vietnamese","korean","sushi","dim sum","stir fry","wok","miso","teriyaki","soy","ramen","udon","soba","dumplings","kimchi","pho","banh mi","bulgogi","bibimbap"]);
+const CHEESE_KW  = new Set(["cheese","cheddar","mozzarella","parmesan","brie","camembert","gruyere","gouda","feta","ricotta","cheesy","halloumi"]);
+const OVEN_KW    = new Set(["bake","baked","casserole","traybake","gratin","au gratin","roast","roasted","moussaka","frittata","quiche"]);
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ALL_TAGS = ["meat & poultry","seafood","vegetarian","pasta & noodles","rice","soup","salad","dessert","breakfast","snack","sauce","asian","cheese","oven bakes"];
@@ -145,7 +147,6 @@ export default function CreateRecipe() {
   function reset() {
     setName(""); setStory(""); setIngredients(""); setSourceUrl("");
     setTags([]); setAutoFilled(false); setTranslated(false); setOriginalName("");
-    setShowTagPicker(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
