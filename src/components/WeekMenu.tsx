@@ -12,11 +12,11 @@ const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const CUISINE_EMOJI: Record<string, string> = {
   // Primary classifier tags (matches RecipeCard CUISINE_STYLES)
-  meat: "🥩", poultry: "🍗", seafood: "🐟",
-  vegetarian: "🥗", vegan: "🌱", dessert: "🍰",
+  "meat & poultry": "🍗", meat: "🍗", poultry: "🍗", seafood: "🐟",
+  vegetarian: "🥬", sides: "🥬", vegan: "🌱", dessert: "🍰",
   baking: "🍞", breakfast: "🍳", snack: "🥨", sauce: "🫙",
   // Cuisine / style tags
-  italian: "🍝", pasta: "🍝", mexican: "🌮", indian: "🍛",
+  italian: "🍝", "pasta & noodles": "🍝", pasta: "🍝", mexican: "🌮", indian: "🍛",
   chinese: "🥡", japanese: "🍣", thai: "🍜", french: "🥐",
   mediterranean: "🥙", american: "🍔", asian: "🍜",
   // Ingredient tags
@@ -36,8 +36,8 @@ const MEAL_TABS = [
 // ─── Fixed primary category filter chips ─────────────────────────────────────
 const CATEGORY_FILTERS = [
   {
-    key: "meat", label: "Meat & Poultry", emoji: "🥩",
-    keywords: ["meat","beef","pork","lamb","veal","steak","bacon","ham","sausage","mince","venison","chorizo","salami","pepperoni","brisket","mutton","meatball","meatballs","poultry","chicken","turkey","duck","goose","hen","quail"],
+    key: "meat", label: "Meat & Poultry", emoji: "🍗",
+    keywords: ["meat & poultry","meat","beef","pork","lamb","veal","steak","bacon","ham","sausage","mince","venison","chorizo","salami","pepperoni","brisket","mutton","meatball","meatballs","poultry","chicken","turkey","duck","goose","hen","quail"],
   },
   {
     key: "seafood", label: "Fish & Seafood", emoji: "🐟",
@@ -48,8 +48,40 @@ const CATEGORY_FILTERS = [
     keywords: [], // matched by absence of all other primary categories
   },
   {
+    key: "pasta", label: "Pasta & Noodles", emoji: "🍝",
+    keywords: ["pasta & noodles","pasta","spaghetti","lasagne","lasagna","fettuccine","penne","rigatoni","tagliatelle","linguine","fusilli","ravioli","tortellini","gnocchi","orzo","noodles","ramen","udon","soba","vermicelli","macaroni"],
+  },
+  {
+    key: "rice", label: "Rice", emoji: "🍚",
+    keywords: ["rice","risotto","paella","pilaf","pilau","bulgur","biryani"],
+  },
+  {
+    key: "soup", label: "Soup", emoji: "🍲",
+    keywords: ["soup","stew","broth","chowder","bisque","gazpacho","minestrone","goulash","cassoulet"],
+  },
+  {
+    key: "salad", label: "Salad", emoji: "🥗",
+    keywords: ["salad"],
+  },
+  {
     key: "dessert", label: "Desserts", emoji: "🍰",
     keywords: ["dessert","cake","brownie","brownies","tart","cheesecake","pudding","mousse","crepe","crepes","donut","doughnut","muffin","muffins","cupcake","sorbet","gelato","tiramisu","macaron","meringue","trifle","flapjack","truffle","fudge","cookie","cookies","biscuit","biscuits","praline","pastry","pie","pavlova"],
+  },
+  {
+    key: "breakfast", label: "Breakfast", emoji: "🍳",
+    keywords: ["breakfast","pancake","pancakes","waffle","waffles","omelette","omelet","toast","granola","porridge","oatmeal"],
+  },
+  {
+    key: "snack", label: "Snack", emoji: "🥨",
+    keywords: ["snack","nibble","dip","hummus","guacamole","bruschetta","crostini"],
+  },
+  {
+    key: "sauce", label: "Sauce", emoji: "🫙",
+    keywords: ["sauce","gravy","dressing","marinade","condiment","relish","chutney","pesto","vinaigrette"],
+  },
+  {
+    key: "asian", label: "Asian", emoji: "🍜",
+    keywords: ["asian","chinese","japanese","thai","vietnamese","korean","sushi","stir fry","wok","miso","teriyaki","soy","dumplings","kimchi","pho"],
   },
 ];
 
@@ -669,7 +701,7 @@ export default function WeekMenu({
                   {sideDishes.map(d => (
                     <div key={d.id} className="flex items-center gap-3 rounded-xl border px-3 py-2.5"
                       style={{ borderColor: "var(--mk-border)", background: "white" }}>
-                      <span className="text-base flex-shrink-0">{d.recipes ? getEmoji(d.recipes as Recipe) : "🥗"}</span>
+                      <span className="text-base flex-shrink-0">{d.recipes ? getEmoji(d.recipes as Recipe) : "🥬"}</span>
                       <div className="flex-1 min-w-0">
                         {d.recipe_id ? (
                           <Link href={`/recipes/${d.recipe_id}`} onClick={() => setSelectedDay(null)}
@@ -717,7 +749,7 @@ export default function WeekMenu({
                       style={{ borderColor: "var(--mk-border)", background: "white" }}>
                       <span className="text-base flex-shrink-0">{getEmoji(r)}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate" style={{ color: "#1a1a1a" }}>{r.name}</p>
+                        <p className={`text-sm truncate ${r.cuisine_tags?.includes("sides") ? "font-normal text-neutral-500" : "font-semibold"}`}>{r.name}</p>
                         {r.cuisine_tags?.[0] && <p className="text-[10px] capitalize text-neutral-400">{r.cuisine_tags[0]}</p>}
                       </div>
                       <div className="flex gap-1.5 flex-shrink-0">
