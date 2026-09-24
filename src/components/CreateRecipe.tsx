@@ -41,6 +41,7 @@ function classifyRecipe(name: string, ingredients: string): string[] {
   if (anyHas(SOUP_KW))   tags.push("soup");
   if (anyHas(SALAD_KW))  tags.push("salad");
   if (anyHas(ASIAN_KW))  tags.push("asian");
+  if (anyHas(CHEESE_KW)) tags.push("cheese");
 
   return tags;
 }
