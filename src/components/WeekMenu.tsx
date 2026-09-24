@@ -24,7 +24,7 @@ const CUISINE_EMOJI: Record<string, string> = {
   fish: "🐟", salmon: "🐟",
   // Dish type tags
   soup: "🍲", salad: "🥗", rice: "🍚", curry: "🍛",
-  egg: "🍳", eggs: "🍳",
+  egg: "🥚", eggs: "🥚",
   "middle-eastern": "🫙",
 };
 const MEAL_TABS = [
@@ -87,6 +87,10 @@ const CATEGORY_FILTERS = [
   {
     key: "oven bakes", label: "Oven Bakes", emoji: "🥘",
     keywords: ["oven bakes","bake","baked","casserole","traybake","tray bake","gratin","au gratin","roast","roasted","moussaka","shepherd's pie","cottage pie","pot pie","frittata","quiche"],
+  },
+  {
+    key: "eggs", label: "Eggs", emoji: "🥚",
+    keywords: ["eggs","egg","omelette","omelet","frittata","scrambled","poached","deviled"],
   },
   {
     key: "asian", label: "Asian", emoji: "🍜",
