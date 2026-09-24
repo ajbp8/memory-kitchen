@@ -9,7 +9,7 @@ const CUISINE_EMOJI: Record<string, string> = {
   baking: "🍞", breakfast: "🍳", snack: "🥨", sauce: "🫙",
   "pasta & noodles": "🍝", pasta: "🍝", italian: "🍝",
   rice: "🍚", soup: "🍲", salad: "🥗", curry: "🍛",
-  asian: "🍜", cheese: "🧀", thai: "🍜", chinese: "🥡", japanese: "🍣",
+  asian: "🍜", cheese: "🧀", "oven bakes": "🥘", thai: "🍜", chinese: "🥡", japanese: "🍣",
   mexican: "🌮", indian: "🍛", french: "🥐",
   mediterranean: "🥙", american: "🍔", "middle-eastern": "🫙",
   beef: "🥩", pork: "🥩", chicken: "🍗", turkey: "🍗",
