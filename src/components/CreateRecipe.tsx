@@ -20,7 +20,7 @@ const OVEN_KW    = new Set(["bake","baked","casserole","traybake","gratin","au g
 const EGG_KW     = new Set(["egg","eggs","omelette","omelet","frittata","scrambled","poached","deviled eggs","egg white","egg yolk"]);
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ALL_TAGS = ["meat & poultry","seafood","vegetarian","pasta & noodles","rice","soup","salad","dessert","breakfast","snack","sauce","asian","cheese","oven bakes"];
+const ALL_TAGS = ["meat & poultry","seafood","vegetarian","pasta & noodles","rice","soup","salad","dessert","breakfast","snack","sauce","asian","cheese","oven bakes","eggs"];
 const TAG_EMOJI: Record<string, string> = {
   "meat & poultry": "🍗", seafood: "🐟", vegetarian: "🥦",
   "pasta & noodles": "🍝", rice: "🍚", soup: "🍲", salad: "🥗",
