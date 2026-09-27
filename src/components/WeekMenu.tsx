@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { addDays, mondayOf, todayStrInAppTZ } from "@/lib/menu";
 
 type Recipe = { id: string; name: string; meal_category: string | null; cuisine_tags: string[] | null };
 type Dish = { id: string; recipe_id: string | null; free_text: string | null; recipes?: { name: string; meal_category: string | null; cuisine_tags: string[] | null } | null };
@@ -25,17 +26,6 @@ const MEAL_TABS = [
 function getEmoji(r: { cuisine_tags: string[] | null; meal_category: string | null }) {
   const t = r.cuisine_tags?.[0]?.toLowerCase();
   return (t && CUISINE_EMOJI[t]) || "🍽️";
-}
-function toISO(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-}
-function todayISO() { return toISO(new Date()); }
-function getMonday(offsetWeeks: number): Date {
-  const d = new Date();
-  const day = d.getDay();
-  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1) + offsetWeeks * 7);
-  d.setHours(0, 0, 0, 0);
-  return d;
 }
 function formatDayHeader(iso: string, i: number) {
   const d = new Date(iso + "T12:00:00");
@@ -101,13 +91,12 @@ export default function WeekMenu({
     };
   }, []);
 
-  const monday = getMonday(weekOffset);
-  const weekStart = toISO(monday);
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(monday);
-    d.setDate(d.getDate() + i);
-    return toISO(d);
-  });
+  // Anchor "today"/"this week" to the app's home timezone (Asia/Singapore)
+  // rather than the device's local timezone, so this always agrees with the
+  // server-rendered initial week from page.tsx (see todayStrInAppTZ) even
+  // if a family member's phone is set to a different timezone.
+  const weekStart = addDays(mondayOf(todayStrInAppTZ()), weekOffset * 7);
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   const cuisineOptions = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -227,7 +216,7 @@ export default function WeekMenu({
     setDaySearch("");
   }
 
-  const todayStr = mounted ? todayISO() : "";
+  const todayStr = mounted ? todayStrInAppTZ() : "";
   if (!mounted) return null;
 
   return (

@@ -1,24 +1,23 @@
 import { createClient } from "@/lib/supabase/server";
+import { mondayOf, todayStrInAppTZ } from "@/lib/menu";
 import WeekMenu from "@/components/WeekMenu";
 
 type Dish = { id: string; recipe_id: string | null; free_text: string | null; recipes?: { name: string; meal_category: string | null; cuisine_tags: string[] | null } | null };
 type Slot = { id: string; day_date: string; meal_type: string; dishes: Dish[] };
 type WeekData = { week_id: string | null; slots: Slot[] };
 
-function getMondayISO(): string {
-  const d = new Date();
-  const day = d.getDay();
-  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
-  d.setHours(0, 0, 0, 0);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
 export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const weekStart = getMondayISO();
+  // Use the app's home timezone (Asia/Singapore), not the server's wall
+  // clock -- see todayStrInAppTZ for why: this server component runs on
+  // Vercel in UTC, and a raw `new Date()` here would compute the wrong
+  // "this week" for part of the day, showing an empty menu that only
+  // "reappears" via the client-side fetch after adding a dish, then goes
+  // missing again on refresh (the SSR fetch keeps landing on the wrong week).
+  const weekStart = mondayOf(todayStrInAppTZ());
 
   // Fetch membership + recipes in parallel (both only need user.id)
   const [{ data: membership }, { data: recipesRaw }] = await Promise.all([
