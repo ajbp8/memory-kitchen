@@ -26,7 +26,6 @@ export async function PATCH(
     "meal_category",
     "cuisine_tags",
     "dietary_tags",
-    "visibility",
   ] as const;
 
   const update: Record<string, unknown> = {};

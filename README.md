@@ -27,12 +27,16 @@ The full schema (16 tables, RLS policies) lives in
 `supabase/migrations/0001_init.sql`. Run it once in the Supabase SQL editor
 for the project.
 
-## Invite-only auth
+## Auth and families
 
-Public sign-ups are disabled in Supabase Auth settings. New accounts can only
-be created through `/join` after a valid invite token is checked server-side
-(`/api/join`), which then calls `supabase.auth.admin.inviteUserByEmail`.
-Existing users sign in via magic link at `/login` (`shouldCreateUser: false`).
+Anyone with the app URL can sign up at `/join` (server route `/api/join`
+creates the account; Supabase public sign-ups stay disabled). A new user
+either creates a family (becomes its single admin) or arrives through a
+family invite link (`/join?family=<token>`) and joins as a member. One family
+per user and one admin per family are enforced by unique indexes
+(`supabase/migrations/0005_open_signup_families.sql`). All recipes are public
+(common pool); menus belong to a family. New signups and new families email the
+owner via Resend (`RESEND_API_KEY`, `NOTIFY_EMAIL` env vars).
 
 ## Legacy app
 

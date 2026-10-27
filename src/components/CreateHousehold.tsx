@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Shown on the Profile screen when the signed-in user isn't a member of any
-// household yet. Every other feature (recipes shared with "your family",
+// family yet. Every other feature (recipes shared with "your family",
 // the weekly menu) is scoped to a family_id, so this is the one thing every
 // new user needs before anything else on the roadmap makes sense.
 export default function CreateHousehold() {
@@ -18,7 +18,7 @@ export default function CreateHousehold() {
     setStatus("working");
     setErrorMsg("");
 
-    const res = await fetch("/api/households", {
+    const res = await fetch("/api/familys", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name }),
@@ -47,10 +47,10 @@ export default function CreateHousehold() {
       style={{ borderColor: "var(--mk-border)", background: "white" }}
     >
       <p className="text-sm font-bold mb-1" style={{ color: "#1a1a1a" }}>
-        Name your household
+        Create your family
       </p>
       <p className="text-xs text-neutral-500 mb-3">
-        This is the group you&apos;ll plan menus and share recipes with.
+        You&apos;ll be the family admin. Your family plans its own menus; all recipes are shared with everyone on Memory Kitchen.
       </p>
       <input
         type="text"
@@ -67,7 +67,7 @@ export default function CreateHousehold() {
         className="w-full rounded-lg py-2 text-sm font-semibold text-white"
         style={{ background: "linear-gradient(to right, #c8602a, #e8854a)" }}
       >
-        {status === "working" ? "Creating..." : "Create household"}
+        {status === "working" ? "Creating..." : "Create family"}
       </button>
       {status === "error" && (
         <p className="text-xs text-red-600 mt-2 text-center">{errorMsg}</p>

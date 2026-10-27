@@ -5,10 +5,9 @@ import { useSearchParams } from "next/navigation";
 
 function JoinForm() {
   const searchParams = useSearchParams();
-  const tokenFromLink = searchParams.get("token") ?? "";
+  const familyToken = searchParams.get("family") ?? "";
 
   const [email, setEmail] = useState("");
-  const [token, setToken] = useState(tokenFromLink);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -20,7 +19,7 @@ function JoinForm() {
     const res = await fetch("/api/join", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, token }),
+      body: JSON.stringify({ email, familyToken: familyToken || undefined }),
     });
 
     if (res.ok) {
@@ -46,7 +45,9 @@ function JoinForm() {
           Join Memory Kitchen
         </h1>
         <p className="text-center text-sm text-neutral-500 mb-8">
-          Enter the invite code a family member sent you
+          {familyToken
+            ? "You've been invited to join a family"
+            : "Create your account to start sharing recipes"}
         </p>
 
         {status === "sent" ? (
@@ -61,14 +62,6 @@ function JoinForm() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-[var(--mk-border)] px-4 py-3 text-sm outline-none focus:border-[var(--mk-terracotta)]"
-            />
-            <input
-              type="text"
-              required
-              placeholder="Invite code"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
               className="w-full rounded-xl border border-[var(--mk-border)] px-4 py-3 text-sm outline-none focus:border-[var(--mk-terracotta)]"
             />
             <button

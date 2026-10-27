@@ -1,8 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-const VISIBILITY_VALUES = ["public", "friends", "private"];
-
 function toStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value
@@ -20,10 +18,6 @@ export async function POST(request: Request) {
   if (!name) {
     return NextResponse.json({ error: "Recipe name is required." }, { status: 400 });
   }
-
-  const visibility = VISIBILITY_VALUES.includes(body.visibility)
-    ? body.visibility
-    : "private";
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -44,7 +38,7 @@ export async function POST(request: Request) {
         typeof body.source_url === "string" ? body.source_url.trim() || null : null,
       cuisine_tags: toStringArray(body.cuisine_tags),
       dietary_tags: toStringArray(body.dietary_tags),
-      visibility,
+      visibility: "public", // every recipe lives in the common pool
     })
     .select("id")
     .single();

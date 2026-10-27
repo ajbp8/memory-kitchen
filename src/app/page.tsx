@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { mondayOf, todayStrInAppTZ } from "@/lib/menu";
 import WeekMenu from "@/components/WeekMenu";
+import CreateHousehold from "@/components/CreateHousehold";
 
 type Dish = { id: string; recipe_id: string | null; free_text: string | null; recipes?: { name: string; meal_category: string | null; cuisine_tags: string[] | null } | null };
 type Slot = { id: string; day_date: string; meal_type: string; dishes: Dish[] };
@@ -32,6 +33,23 @@ export default async function HomePage() {
       .eq("owner_id", user.id)
       .order("name"),
   ]);
+
+  // New users land here with no family yet: they create one (and become its
+  // single admin) before anything else. Members who joined via an invite link
+  // already have a family, so they skip straight to the menu.
+  if (!membership?.family_id) {
+    return (
+      <main className="min-h-screen px-5 pt-14 pb-24" style={{ background: "var(--mk-cream)" }}>
+        <h1 className="text-2xl font-bold mb-1" style={{ color: "var(--mk-terracotta)" }}>
+          Welcome to Memory Kitchen
+        </h1>
+        <p className="text-sm text-neutral-500 mb-6">
+          One quick step: name your family, then start planning menus and adding recipes.
+        </p>
+        <CreateHousehold />
+      </main>
+    );
+  }
 
   const recipes = recipesRaw ?? [];
 

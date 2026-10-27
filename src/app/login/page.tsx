@@ -142,9 +142,9 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-xs text-neutral-400 mt-8">
-          New here? You&apos;ll need an invite link from a family member.{" "}
+          New here?{" "}
           <Link href="/join" className="underline">
-            Have an invite code?
+            Create an account
           </Link>
         </p>
       </div>

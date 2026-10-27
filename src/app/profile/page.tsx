@@ -8,10 +8,12 @@ export default async function ProfilePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const [profileResult, recipesResult] = await Promise.all([
+  const [profileResult, recipesResult, membershipResult] = await Promise.all([
     supabase.from("users").select("name, avatar_url").eq("id", user.id).maybeSingle(),
     supabase.from("recipes").select("id", { count: "exact", head: true }).eq("owner_id", user.id),
+    supabase.from("family_members").select("role").eq("user_id", user.id).maybeSingle(),
   ]);
+  const isFamilyAdmin = membershipResult.data?.role === "admin";
 
   const displayName = profileResult.data?.name || user.email?.split("@")[0] || "there";
   const avatarUrl = profileResult.data?.avatar_url ?? null;
@@ -38,7 +40,7 @@ export default async function ProfilePage() {
 
       {/* Actions */}
       <div className="px-5 mt-5 space-y-3">
-        <InviteLink />
+        {isFamilyAdmin && <InviteLink />}
         <LogoutButton />
       </div>
     </main>
